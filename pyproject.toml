@@ -1,7 +1,7 @@
 [project]
-name = "mat-data"
+name = "mat-view"
 version = "0.1b0"
-description = "Data Preprocess Tools for Multiple Aspect Trajectory Data Mining"
+description = "MAT-view: Visualization Tools for Multiple Aspect Trajectory Data Mining"
 authors = [
     {name = "Tarlis Tortelli Portela", email = "tarlis@tarlis.com.br"},
  ]
@@ -41,6 +41,8 @@ dependencies = [
     "glob2==0.7",
     "numpy",
     "pandas==1.3.4",
+    "mat-data",
+    "mat-model",
  ]
 
 [project.optional-dependencies]
@@ -69,11 +71,11 @@ dl = [
  ]
 
 [project.urls]
-"Homepage" = "https://github.com/ttportela/mat-data"
-"Repository" = "https://github.com/ttportela/mat-data"
-"Documentation" = "https://github.com/ttportela/mat-data/blob/main/README.md"
-"Download" = "https://pypi.org/project/mat-data/#files"
-"Bug Tracker" = "https://github.com/ttportela/mat-data/issues"
+"Homepage" = "https://github.com/mat-analysis/mat-view"
+"Repository" = "https://github.com/mat-analysis/mat-view"
+"Documentation" = "https://github.com/mat-analysis/mat-view/blob/main/README.md"
+"Download" = "https://pypi.org/project/mat-view/#files"
+"Bug Tracker" = "https://github.com/mat-analysis/mat-view/issues"
 
 [project.license]
 text = 'GPL Version 3 or superior (see LICENSE file)'
