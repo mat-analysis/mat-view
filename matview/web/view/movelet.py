@@ -43,7 +43,7 @@ def movelet_component(m, ident=0):
                         style={"transform": "translateX(-50%)", "left": "0%"}
                     )
                 ]+list(map(lambda i: 
-                    html.Span('p'+str(m.start+i)
+                    html.Span(m.points[i].p #'p'+str(m.start+i)
                     , className="m-slider-mark-text m-slider-mark-text-active"
                     , style={"transform": "translateX(-50%)", "left": "{}%".format((i+1)*100//n)}),
                 range(n))), className="m-slider-mark"),

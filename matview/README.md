@@ -1,19 +1,13 @@
 # MAT-view: Visualization Tools for Multiple Aspect Trajectory Data Mining \[MAT-Tools Framework\]
 ---
 
-\[[Publication](#)\] \[[citation.bib](citation.bib)\] \[[GitHub](https://github.com/ttportela/movelets)\] \[[PyPi](https://pypi.org/project/movelets/)\]
+\[[Publication](#)\] \[[citation.bib](citation.bib)\] \[[GitHub](https://github.com/mat-analysis/mat-view)\] \[[PyPi](https://pypi.org/project/mat-view/)\]
 
 
 The present application offers a tool, to support the user in the classification task of multiple aspect trajectories, specifically for visualizing the trajectories and movelets, the parts of the trajectory that better discriminate a class. It integrates into a unique platform the fragmented approaches available for multiple aspects trajectories and in general for multidimensional sequence classification into a unique web-based and python library system.
 
 Created on Apr, 2024
 Copyright (C) 2024, License GPL Version 3 or superior (see LICENSE file)
-
-### Main Modules
-
-- [proprocess](/proprocess.py): Methods for trajectory preprocessing;
-- [generator](/generator.py): Methods for trajectory datasets generation.
-
 
 ### Installation
 
@@ -22,6 +16,16 @@ Install directly from PyPi repository, or, download from github. (python >= 3.7 
 ```bash
     pip install mat-view
 ```
+
+### Usage
+
+This package enables a environment script to run the web application, just run:
+
+```bash
+    MAT.py
+```
+
+By default Dash will run on http://127.0.0.1:8050/
 
 ### Citing
 

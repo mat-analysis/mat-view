@@ -1,20 +1,20 @@
-METHODS_NAMES = {
-    
+# -------------------------------------------------------------------
+METHOD_NAMES = {
     'Dodge': 'Dodge',
     'Xiao': 'Xiao',
     'Zheng': 'Zheng',
     'Movelets': 'Movelets', 
     
-    'TRF': 'RF (DeepeST)',
-    'TXGB': 'XGBoost (DeepeST)',
-    'TULVAE': 'TULVAE (DeepeST)',
-    'BITULER': 'BITULER (DeepeST)',
+    'TRF': 'MAT-RF',
+    'TXGB': 'MAT-XGBoost',
+    'TULVAE': 'TULVAE',
+    'BITULER': 'BITULER',
     'DEEPEST': 'DeepeST',
     
-    'TC-TRF': 'RF (DeepeST)',
-    'TC-TXGB': 'XGBoost (DeepeST)',
-    'TC-TULVAE': 'TULVAE (DeepeST)',
-    'TC-BITULER': 'BITULER (DeepeST)',
+    'TC-TRF': 'MAT-RF',
+    'TC-TXGB': 'MAT-XGBoost',
+    'TC-TULVAE': 'TULVAE',
+    'TC-BITULER': 'BITULER',
     'TC-DEEPEST': 'DeepeST',
     
     'poi':  'POI-F',
@@ -81,17 +81,17 @@ METHODS_NAMES = {
 #    'Ur': 'UltraMovelets-R',
 }
 
-METHODS_ABRV = {
+METHOD_ABRV = {
     
     'Dodge': 'Dodge',
     'Xiao': 'Xiao',
     'Zheng': 'Zheng',
     'Movelets': 'Movelets', 
     
-    'TRF': 'RF (D.)',
-    'TXGB': 'XGBoost (D.)',
-    'TULVAE': 'TULVAE (D.)',
-    'BITULER': 'BITULER (D.)',
+    'TRF': 'MAT-RF',
+    'TXGB': 'MAT-XGB',
+    'TULVAE': 'TULVAE',
+    'BITULER': 'BITULER',
     'DEEPEST': 'DeepeST',
     
     'POI_1':  'POI (1)',
@@ -145,15 +145,15 @@ METHODS_ABRV = {
     'U': 'UM', 
 }
 
-CLASSIFIERS_NAMES = {
-    '-':   'Self',
+MODEL_NAMES = {
+    '-':   'Self', # Use - for any other type or no model
     'NN':  'Neural Network (NN)',
     'MLP': 'Neural Network (NN)',
     'RF':  'Random Forrest (RF)',
     'SVM': 'Support Vector Machine (SVM)',
 }
 
-METRICS_NAMES = {
+METRIC_NAMES = {
     'f_score':       'F-Score',
     'f1_score':      'F-Measure',
     'accuracy':      'Accuracy',
@@ -161,4 +161,37 @@ METRICS_NAMES = {
     'precision':     'Precision',
     'recall':        'Recall',
     'loss':          'Loss',
+    
+    # TIME specific
+    'clstime':       'Classification Time',
+    'totaltime':     'Total Runtime',
+    
+    # Movelets specific
+    'candidates':    'Number of Candidates',
+    'movelets':      'Number of Movelets',
 }
+
+def metricName(code):
+    code = code.replace('metric:', '')
+    
+    if code in METRIC_NAMES.keys():
+        return METRIC_NAMES[code]
+    
+    name = code[0].upper()
+    for c in code[1:]:
+        if c.isupper():
+            name += ' ' + c
+        elif c.isdigit() and not name[-1].isdigit():
+            name += ' ' + c
+        elif c == '_':
+            name += '-'
+        else:
+            name += c
+    
+    return name
+
+def datasetName(dataset, subset):
+    if subset == 'specific':
+        return dataset
+    else:
+        return dataset + ' ('+subset+')'

@@ -36,11 +36,6 @@ def render(pathname):
                 html.P(id="counter"),
             ]
         )
-        
-        return html.Div(style = {'margin':'1rem'}, children=[
-#             html.H3('Datasets'), 
-            render_markdown_file(WEB_ROUTE+'/method/methods.md'),
-        ])
     elif pathname[-2:] == 'md':
         return html.Div(style = {'margin':'1rem'}, children=[
 #             html.H3('Datasets'), 

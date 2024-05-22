@@ -31,8 +31,8 @@ import dash_pager
 
 from tqdm.auto import tqdm
 
-from matmodel.base.Trajectory import *
-from matmodel.base.Movelet import *
+from matmodel.base import Trajectory
+from matmodel.base import Movelet
 from matmodel.util.filters import names2indexes, attributes2names
 
 # ------------------------------------------------------------
@@ -41,9 +41,6 @@ def render_mat_filter(ls_trajs, from_trajs, to_trajs, attributes, sel_attributes
         import random
         T = random.sample(ls_trajs, 1)[0]
         SIZE = getAttrSize(T, []) # in chars
-        #print('SIZE', SIZE)
-    
-    print(attributes, sel_attributes)
     
     return html.Div([
         html.Div([
@@ -99,7 +96,8 @@ def render_mat(ls_trajs, range_value, ls_movs, sel_attributes):
                     html.Strong(T.label),
                 ]),
                 html.Div(style={'marginLeft': '50px'}, children = [dcc.RangeSlider(
-                    marks={i: {'label':'p'+str(i)} for i in range(T.size)}, # , 'style':{'display': 'block'}
+#                    marks={i: {'label':'p'+str(i)} for i in range(T.size)}, # , 'style':{'display': 'block'}
+                    marks=dict(map(lambda i: (i, {'label':T.points[i].p}), range(T.size))),
                     min=0,
                     max=T.size-1,
                     value=[0, T.size-1],
@@ -115,7 +113,7 @@ def render_mat(ls_trajs, range_value, ls_movs, sel_attributes):
                         return [m.start, m.start+m.size]
                     return []
                 values = sum(map(lambda m: add_vals(m), ls_movs), [])
-                
+    
                 a_name = T.attributes[attr].text
                 return html.Div(
                     className='traj-color'+str((k % ncor) + 1)+'-rangeslider traj-slider traj-slider', children = [
@@ -150,7 +148,8 @@ def render_mat_movelets(T, ls_movs):
             html.Strong(T.label),
         ]),
         html.Div(style={'marginLeft': '50px'}, children = [dcc.RangeSlider(
-            marks={i: {'label':'p'+str(i)} for i in range(T.size)}, # , 'style':{'display': 'block'}
+#            marks={i: {'label':'p'+str(i)} for i in range(T.size)}, # , 'style':{'display': 'block'}
+            marks=dict(map(lambda i: (i, {'label':T.points[i].p}), range(T.size))), 
             min=0,
             max=T.size-1,
             value=[0, T.size-1],

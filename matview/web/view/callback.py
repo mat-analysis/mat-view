@@ -29,6 +29,7 @@ from tqdm.auto import tqdm
 from pandas import json_normalize
 
 from matdata.preprocess import readDataset, organizeFrame
+from matdata.converter import csv2df, read_zip #, read_mat, load_from_tsfile, xes2df
 
 from matmodel.util.parsers import df2trajectory, json2movelet
 
@@ -183,24 +184,24 @@ def parse_contents(contents, filename, date):
 
             df = pd.DataFrame()
             if ext == 'csv':
-                from matdata.converter import csv2df
+#                from matdata.converter import csv2df
                 decoded = io.StringIO(decoded.decode('utf-8'))
                 df = csv2df(decoded, missing='?')
             elif ext == 'zip':
-                from matdata.converter import read_zip
+#                from matdata.converter import read_zip
                 from zipfile import ZipFile
                 decoded = io.BytesIO(decoded)
                 df = read_zip(ZipFile(decoded, "r"))
             elif ext == 'mat':
-                from matdata.converter import read_mat
+#                from matdata.converter import read_mat
                 decoded = io.StringIO(decoded.decode('utf-8'))
                 df = read_mat(decoded, missing='?')
             elif ext == 'ts':
-                from matdata.inc.ts_io import load_from_tsfile
+#                from matdata.inc.ts_io import load_from_tsfile
                 decoded = io.StringIO(decoded.decode('utf-8'))
                 df = load_from_tsfile(decoded, replace_missing_vals_with="?")
             elif ext == 'xes':
-                from matdata.converter import xes2df
+#                from matdata.converter import xes2df
                 decoded = io.StringIO(decoded.decode('utf-8'))
                 df = xes2df(decoded, missing='?')
 

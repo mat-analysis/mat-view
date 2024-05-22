@@ -14,8 +14,9 @@ from dash import html, ALL
 import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input, State
 
-from matdata.datasets import DATASET_TYPES, SUBSET_TYPES, translateCategory
+from matdata.dataset import DATASET_TYPES, SUBSET_TYPES, translateCategory
 
+from matview.util.format import format_hour
 from matview.web.definitions import *
 from matview.web.app_base import app
 from matview.web.config import DATA_PATH, WEB_ROUTE, RESULTS_FILE, PACKAGE_NAME, render_markdown_file, underDev
@@ -137,7 +138,8 @@ def render_datasets_category_tb(category, dsdict):
         aux['Category'] = getBadges(category, dataset, subsets)
 #        aux['File'] = os.path.join(data_path, category, dataset, dataset+'.md')
         aux['File'] = 'https://raw.githubusercontent.com/mat-analysis/datasets/main/{}/{}/{}.md'.format(category, dataset, dataset)
-        df = df.append(aux, ignore_index=True)
+#        df = df.append(aux, ignore_index=True)
+        df = pd.concat([df, pd.DataFrame(aux, index=[0])])
         
     return dash_table.DataTable(
         id='table-datasets',
@@ -279,29 +281,29 @@ def render_results(dataset):
         line['Result'] = format_hour(df[key][i]) if key != 'metric:accuracy' else df[key][i]
         
         method = df['method'][i]
-        mname = METHODS_NAMES[method] if method in METHODS_NAMES.keys() else method
+        mname = METHOD_NAMES[method] if method in METHOD_NAMES.keys() else method
         mlink = mname.split('-')[0].split(' ')[0].replace('Pivots', 'Movelets') # TODO: TEMP Fix, look for a better way
         line['Method'] = '['+mname+'](../../method/'+mlink+')'
         
-        method = df['classifier'][i]
-        method = CLASSIFIERS_NAMES[method] if method in CLASSIFIERS_NAMES.keys() else method
-        line['Classifier'] = method
+        method = df['model'][i]
+        method = MODEL_NAMES[method] if method in MODEL_NAMES.keys() else method
+        line['model'] = method
         records.append(line)
     
     i = df['metric:accuracy'].idxmax()
     apline(i, 'metric:accuracy', df['metric:accuracy'][i], df)
-    i = df['runtime'].idxmin()
-    apline(i, 'runtime', format_hour(df['runtime'][i]), df)
-    i = df[df['cls_runtime'] > 0]['cls_runtime'].idxmin()
-    apline(i, 'cls_runtime', format_hour(df['cls_runtime'][i]), df)
-    i = df['totaltime'].idxmin()
-    apline(i, 'totaltime', format_hour(df['totaltime'][i]), df)
+    i = df['metric:runtime'].idxmin()
+    apline(i, 'metric:runtime', format_hour(df['metric:runtime'][i]), df)
+    i = df[df['metric:clstime'] > 0]['metric:clstime'].idxmin()
+    apline(i, 'metric:clstime', format_hour(df['metric:clstime'][i]), df)
+    i = df['metric:totaltime'].idxmin()
+    apline(i, 'metric:totaltime', format_hour(df['metric:totaltime'][i]), df)
         
     return dash_table.DataTable(data=records, columns=[
             {"name": ' ', "id":  'Best'},
             {"name": 'Result', "id":  'Result'},
             {"name": 'Method', "id":  'Method', 'type': 'text', "presentation": "markdown",},
-            {"name": 'Classifier', "id":  'Classifier'},
+            {"name": 'Model', "id":  'Model'},
         ], 
         style_cell={'padding-left': '5px', 'padding-right': '5px'}, css=[{
             'selector': 'table',
@@ -330,7 +332,7 @@ def render_related_publications(dataset):
     
     txt = '| Title | Authors | Year | Venue | Links | Cite |\n|:------|:--------|------|:------|:------|:----:|\n'
     
-    ls = [METHODS_NAMES[x].split('-')[0] if x in METHODS_NAMES.keys() else x for x in df['method'].unique()]
+    ls = [METHOD_NAMES[x].split('-')[0] if x in METHOD_NAMES.keys() else x for x in df['method'].unique()]
 #     ls = list(df['method'].unique())
     for method in set(ls):
         file = os.path.join(PACKAGE_NAME, 'web', 'method', method+'.md')
@@ -411,24 +413,3 @@ def getBadges(category, dataset, subsets):
 #    href = triggered['index']
 #    href = glob.glob(os.path.join(DATA_PATH, '*', href))[0]
 #    return dcc.send_file(href)
-
-# ------------------------------------------------------------
-def format_hour(millis):
-    appnd = '*' if millis < 0 else ''
-    millis = abs(millis)
-    if millis > 0:
-        hours, rem = divmod(millis, (1000*60*60))
-        minutes, rem = divmod(rem, (1000*60))
-        seconds, rem = divmod(rem, 1000)
-        value = ''
-        if hours > 0:
-            value = value + ('%dh' % hours)
-        if minutes > 0:
-            value = value + (('%02dm' % minutes) if value != '' else ('%dm' % minutes))
-        if seconds > 0:
-            value = value + (('%02ds' % seconds) if value != '' else ('%ds' % seconds))
-        if value == '':
-            value = value + (('%02.3fs' % (rem/1000)) if value != '' else ('%.3fs' % (rem/1000)))
-        return value + appnd
-    else: 
-        return "-"

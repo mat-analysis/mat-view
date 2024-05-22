@@ -42,27 +42,27 @@ page_title = 'MAT-Tools Framework' #PACKAGE_NAME.capitalize()
 MODULES = [
     [
         'Datasets', 
-        'Some quick example text to build on the card title and make up the bulk of the card\'s content.', 
+        'List of multiple aspect trajectory datasets from public respository of preprocessed datasets used in research experiments.', 
         '/dataset'
     ],[
         'Methods', 
-        'Some quick example text to build on the card title and make up the bulk of the card\'s content.', 
+        'Methods for trajectory data mining tasks: classification, summarization, similarity and clustering.', 
         '/method'
     ],[
         'Scripting', 
-        'Some quick example text to build on the card title and make up the bulk of the card\'s content.', 
+        'Scrip generator for experimenting with MAT data mining methods.', 
         '/scripting'
     ],[
         'Results', 
-        'Some quick example text to build on the card title and make up the bulk of the card\'s content.', 
+        'Result metrics exploration, plots and analysis visualizations.', 
         '/result'
     ],[
         'View', 
-        'Some quick example text to build on the card title and make up the bulk of the card\'s content.', 
+        'Data visualizations for multiple aspect trajectory, combined trajectory and movelets, and other graph plots.', 
         '/view'
     ],[
         'Pages', 
-        'Some quick example text to build on the card title and make up the bulk of the card\'s content.', 
+        'Other content pages and links', 
         '/pages'
     ],
 ]
@@ -72,18 +72,18 @@ def underDev(pathname):
     import dash_bootstrap_components as dbc
     from dash import html
     return html.Div([
-            dbc.Alert('Page "{}" not found, sorry. ;/'.format(pathname), color="info", style = {'margin':10})
+            dbc.Alert('Page "{}" not found, sorry. ;/'.format(pathname), color="info", style = {'margin':'1rem'})
         ])
 
 def alert(msg, mtype="info"):
     import dash_bootstrap_components as dbc
-    return dbc.Alert(msg, color=mtype, style = {'margin':10})
+    return dbc.Alert(msg, color=mtype, style = {'margin':'1rem'})
 
-def render_markdown_file(file, div=False):
+def render_markdown_file(file, div=False, link_target="_blank"):
     from dash import html
     from dash import dcc
     f = open(os.path.join(ROOT, file), "r")
     if div:
-        return html.Div(dcc.Markdown(f.read()), style={'margin': '20px'}, className='markdown')
+        return html.Div(dcc.Markdown(f.read(), link_target=link_target), style={'margin': '1rem'}, className='markdown')
     else:
-        return dcc.Markdown(f.read())
+        return dcc.Markdown(f.read(), link_target=link_target)

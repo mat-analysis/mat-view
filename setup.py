@@ -37,9 +37,9 @@ setuptools.setup(
 #    packages=setuptools.find_packages(include=[PACKAGE_NAME, PACKAGE_NAME+'.*']),
     packages=setuptools.find_packages(),
 #    include_package_data=True,
-#    scripts=[
-#         'scripts/x.py', # For future
-#    ],
+    scripts=[
+         'scripts/MAT-Web.py', # For future
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",

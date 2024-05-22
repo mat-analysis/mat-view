@@ -20,6 +20,7 @@ import io
 
 import dash
 from dash import dash_table
+import dash_pager
 from dash import dcc
 from dash import html
 import plotly.graph_objects as go
@@ -131,6 +132,9 @@ app.layout = html.Div(id = 'parent', children = [
         html.Div('', id='load-screen', className='load-screen', 
                  style={'visibility': 'hidden'}
         ),
+        html.Div([ # Workaround for importing components TODO**
+            dash_pager.Pager(maxValue=0),
+        ], style={'display': 'none'})
     ]
 )
 

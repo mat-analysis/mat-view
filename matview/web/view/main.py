@@ -24,7 +24,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input, State
-
+#import dash_pager
 #from matdata.preprocess import readDataset, organizeFrame
 
 #from matview.web.app_base import app, sess, gess
