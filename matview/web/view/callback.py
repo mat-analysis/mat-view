@@ -226,7 +226,7 @@ def update_trajectories(df):
     ls_tids        = set(gess('ls_tids', []))
     ls_trajs       = gess('ls_trajs', [])
     
-    ls_aux = df2trajectory(df)
+    ls_aux, _ = df2trajectory(df)
     #for T in ls_aux:
     def processT(T):
         nonlocal ls_tids, ls_trajs

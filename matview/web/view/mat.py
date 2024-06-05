@@ -110,7 +110,7 @@ def render_mat(ls_trajs, range_value, ls_movs, sel_attributes):
 #                for m in ls_movs:
                     if m.trajectory.tid == T.tid and T.attribute_names[attr] in m.attribute_names:
 #                        values += [m.start, m.start+m.size]
-                        return [m.start, m.start+m.size]
+                        return [m.start, m.start+m.size-1]
                     return []
                 values = sum(map(lambda m: add_vals(m), ls_movs), [])
     
@@ -170,7 +170,7 @@ def render_mat_movelets(T, ls_movs):
                         marks=dict(map(lambda i: (i, str(T.points[i].aspects[attr])) , range(T.size) )),
                         min=0,
                         max=T.size-1,
-                        value=[m.start, m.start+m.size],
+                        value=[m.start, m.start+m.size-1],
                         tooltip={"placement": "bottom", "always_visible": False},
                     )]),
                 ], style={'width': getAttrCHS(T.size, size)}), m._attributes))

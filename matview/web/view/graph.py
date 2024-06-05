@@ -84,7 +84,8 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
     
     if sel_attribute == '':
         sel_attribute = None
-    
+
+    to_value += 1
     ls_movs = movelets[from_value : 
             (to_value if to_value <= len(movelets) else len(movelets))]
     
@@ -146,7 +147,7 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
         fig = html.Div([fig]) 
     elif model == 'movelets':
         
-        maxn = max(map(lambda m: m.size, ls_movs))
+#        maxn = max(map(lambda m: m.size, ls_movs))
         
         fig = html.Div([
 #                html.Ul([html.Li([
