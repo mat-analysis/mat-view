@@ -17,8 +17,8 @@ import setuptools
 import configparser
 config = configparser.ConfigParser()
 config.read('pyproject.toml')
-VERSION = config['project']['version']
-PACKAGE_NAME = config['project']['name']
+VERSION = config['project']['version'].strip('"')
+PACKAGE_NAME = config['project']['name'].strip('"')
 DEV_VERSION = "0.1b0"
 
 with open("README.md", "r") as fh:

@@ -4,9 +4,9 @@
 \[[Publication](#)\] \[[citation.bib](citation.bib)\] \[[GitHub](https://github.com/mat-analysis/mat-view)\] \[[PyPi](https://pypi.org/project/mat-view/)\]
 
 
-The present application offers a tool, to support the user in the classification task of multiple aspect trajectories, specifically for visualizing the trajectories and movelets, the parts of the trajectory that better discriminate a class. It integrates into a unique platform the fragmented approaches available for multiple aspects trajectories and in general for multidimensional sequence classification into a unique web-based and python library system.
+The present application offers a set of web tools to support the user in the visualization of multiple aspect trajectories and movelets (the parts of the trajectory that better discriminate a class). Also, present a detailed list of available datasets on a public repository, descriptions of MAT data mining methods, experimental results exploration, environmental and scripting generators. It integrates into a unique platform of the approaches available for multiple aspects trajectories and in general for multidimensional sequence classification into a unique web-based and python library system.
 
-Created on Apr, 2024
+Created on Jun, 2024
 Copyright (C) 2024, License GPL Version 3 or superior (see LICENSE file)
 
 ### Installation
@@ -22,32 +22,22 @@ Install directly from PyPi repository, or, download from github. (python >= 3.7 
 This package enables a environment script to run the web application, just run:
 
 ```bash
-    MAT.py
+    MAT-Web.py
 ```
 
 By default Dash will run on http://127.0.0.1:8050/
+
+\* In case you have trouble loading any data into the page (or an action is not updating the page), refresh the site and try again.
 
 ### Citing
 
 If you use `mat-view` please cite the following paper:
 
-    Tarlis Tortelli Portela; Jonata Tyska Carvalho; Vania Bogorny. HiPerMovelets: high-performance movelet extraction for trajectory classification, International Journal of Geographical Information Science, 2022. DOI: 10.1080/13658816.2021.2018593.
+**TODO**
 
-[Bibtex](citation.bib):
-
+Bibtex:
 ```bash
-@article{Portela2022,
-    author = {Tarlis Tortelli Portela and Jonata Tyska Carvalho and Vania Bogorny},
-    title = {HiPerMovelets: high-performance movelet extraction for trajectory classification},
-    journal = {International Journal of Geographical Information Science},
-    volume = {0},
-    number = {0},
-    pages = {1-25},
-    year  = {2022},
-    publisher = {Taylor & Francis},
-    doi = {10.1080/13658816.2021.2018593},
-    URL = {https://doi.org/10.1080/13658816.2021.2018593}
-}
+@inproceedings{...}
 ```
 
 ### Collaborate with us
