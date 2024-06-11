@@ -1,18 +1,23 @@
+import os
+from abc import ABC
+
 import dash_bootstrap_components as dbc
 
-from matview.scripting.component._base import BaseMethod
+from matview.scripting.component._base import BaseMethod, MoveletsBaseMethod
 
-class HiperMovelets(BaseMethod):
+class HiperMovelets(MoveletsBaseMethod, BaseMethod):
     
-    PROVIDE = 'hiper'
+    PROVIDE = 'H'
     
     NAMES = {
+        'H': 'HiPer',
+        
         'hiper': 'HiPerMovelets', 
         'hiper-pivots': 'HiPerPivots', 
         'hiper+Log': 'HiPerMovelets-Log',
         'hiper-pivots+Log': 'HiPerPivots-Log',
         
-        'H': 'HiPerMovelets τ=90%', 
+#        'H': 'HiPerMovelets τ=90%', 
         'HL': 'HiPerMovelets τ=90%',
         'HTR75': 'HiPerMovelets τ=75%', 
         'HTR75L': 'HiPerMovelets τ=75%',
@@ -27,13 +32,9 @@ class HiperMovelets(BaseMethod):
         'HpTR50L': 'HiPerPivots τ=50%',
     }
     
-    def __init__(self, idx, isLog=True, isPivots=True, isTau=False, tau=0.9):
-        super().__init__(idx)
-        self.isLog = isLog
-        self.isPivots = isPivots
-        self.isTau = isTau
-        self.tau = tau
-        self.temp_tau = tau
+    def __init__(self, idx, isLog=True, isPivots=False, isTau=False, tau=0.9):
+        BaseMethod.__init__(self, idx)
+        MoveletsBaseMethod.__init__(self, isLog=isLog, isPivots=isPivots, isTau=isTau, tau=tau)
     
     def render(self):
         return [
@@ -81,71 +82,10 @@ class HiperMovelets(BaseMethod):
             self.temp_tau = value
             if self.isTau:
                 self.tau = value
-    
+                
     @property
-    def name(self):
-        name = 'H'
-        if self.isPivots:
-            name += 'p'
-        if self.isLog:
-            name += 'L'
-        if self.isTau and self.tau != 0.9:
-            name += 'TR{}'.format(int(self.tau*100))
-        return name
-    
-    def title(self):
-        name = self.PROVIDE
-        if self.isPivots:
-            name += '-pivots'
-        if self.isLog:
-            name += '+Log'
-        return str(self.idx)+') ' + self.NAMES[name] + ' τ={}%'.format(int(self.tau*100))
-    
-    def script(self, params, data_path='${DATAPATH}', res_path='${RESPATH}', prog_path='${PROGPATH}'):
-        
-        program = os.path.join(prg_path, 'HIPERMovelets.jar')
-        
-        outfile = os.path.join(res_path, self.name+'.txt')
-        
-        java_opts = ''
-        if 'GB' in params.keys():
-            java_opts = '-Xmx'+params['GB']+'G'
-            
-        descriptor = os.path.basename(data_path)
-        cmd = f'-descfile "{descriptor}_specific_hp.json"'
-        
-        cmd += ' -version ' + self.PROVIDE
+    def version(self):
+        cmd = ' -version hiper'
         if self.isPivots:
             cmd += '-pivots'
-            
-        if not self.isLog:
-            cmd += ' -Ms -1'
-        else:
-            cmd += ' -Ms -3'
-            
-        if self.isTau:
-            cmd += ' -TR ' + str(self.tau)
-            
-        if 'TC' in params.keys():
-            cmd += ' -tc ' + params['TC']
-        if 'nt' in params.keys():
-            cmd += ' -nt ' + params['nt']
-            
-        cmd = f'java {java_opts} -jar "{program}" -curpath "{data_folder}" -respath "{res_path}" ' + cmd
-        
-        cmd += f' 2>&1 | tee -a "{outfile}" \n\n'
-        
-        cmd += '# Join the result train and test data:\n'
-        cmd += f'MAT-MergeDatasets.py "{res_path}" \n\n'
-        
-        cmd += '# Run MLP and RF classifiers:\n'
-        cmd += f'MAT-MC.py -c "MLP,RF" "{res_path}"\n\n'
-        
-        cmd += '# This script requires python package "mat-classification".\n'
-        
         return cmd
-    
-    def downloadLine(self):
-        url = 'https://raw.githubusercontent.com/ttportela/automatize/main/jarfiles/'
-        model = 'curl -o {1} {0}/{1} \n'
-        return model.format(url, 'HIPERMovelets.jar')

@@ -1,3 +1,4 @@
+import os
 from dash import dcc
 import dash_bootstrap_components as dbc
 
@@ -16,9 +17,10 @@ class POI(BaseMethod):
         'POI_1_2_3':  'POI (1+2+3)',
     }
     
-    def __init__(self, idx, sequences=1):
+    def __init__(self, idx, sequences=1, feature='poi'):
         super().__init__(idx)
         self.sequences = sequences
+        self.feature = feature
     
     def render(self):
         return [
@@ -32,14 +34,45 @@ class POI(BaseMethod):
                 marks={i: '{}'.format(i) for i in range(1, 11)},
                 updatemode='drag',
             ),
+            dbc.InputGroup(
+                [ 
+                    dbc.InputGroupText('Feature:'),
+                    dbc.Input(type="text", value=self.feature, id={'type': 'exp-param2','index': self.idx}),
+                ],
+                className="mb-3",
+            ),
         ]
     
     def update(self, changed_id, value, param_id=1): # log, pivots, isTau, tau
         if param_id == 1:
             self.sequences = value
+        if param_id == 2:
+            self.feature = value
+    
+    @property
+    def name(self):
+        name = self.PROVIDE.upper()
+        name += '_' + '_'.join(self.feature.split(','))
+        name += '_' + '_'.join([str(i) for i in range(1,self.sequences+1)])
+        return name
     
     def title(self):
-        return str(self.idx)+') ' + self.NAMES[self.PROVIDE] + ' (' +('+'.join([str(i) for i in range(1,self.sequences+1)]))+ ')'
+        return self.NAMES[self.PROVIDE] + ' (' + self.feature + ', ' +('+'.join([str(i) for i in range(1,self.sequences+1)]))+ ')'
+    
+    def script(self, params, folder='${DIR}', data_path='${DATAPATH}', res_path='${RESPATH}', prog_path='${PROGPATH}'):
+        exp_path = os.path.join(res_path, folder)
+        outfile = os.path.join(res_path, folder, folder+'.txt')
+        
+        sequences = ','.join([str(i) for i in range(1,self.sequences+1)])
+        cmd = f'POIS.py -m "{self.PROVIDE}" -s "{sequences}" -f "{self.feature}" --classify "{data_path}" "{res_path}"'
+        if 'TC' in params.keys():
+            cmd = 'timeout ' + params['TC'] +' '+ cmd
+            
+        cmd += f' 2>&1 | tee -a "{outfile}" \n\n'
+        
+        cmd += '# This script requires python package "mat-classification".\n'
+        
+        return cmd
             
 class NPOI(POI, BaseMethod):
     
@@ -54,8 +87,8 @@ class NPOI(POI, BaseMethod):
         'NPOI_1_2_3':  'NPOI (1+2+3)',
     }
     
-    def __init__(self, idx, sequences=1):
-        super().__init__(idx, sequences)
+    def __init__(self, idx, sequences=1, feature='poi'):
+        super().__init__(idx, sequences, feature)
             
 class WNPOI(POI, BaseMethod):
     
@@ -70,5 +103,5 @@ class WNPOI(POI, BaseMethod):
         'WNPOI_1_2_3':  'WNPOI (1+2+3)',
     }
     
-    def __init__(self, idx, sequences=1):
-        super().__init__(idx, sequences)
+    def __init__(self, idx, sequences=1, feature='poi'):
+        super().__init__(idx, sequences, feature)

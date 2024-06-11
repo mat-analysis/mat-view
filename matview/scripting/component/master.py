@@ -1,13 +1,13 @@
 import dash_bootstrap_components as dbc
 
-from matview.scripting.component._base import BaseMethod
+from matview.scripting.component._base import BaseMethod, MoveletsBaseMethod
 
-class MasterMovelets(BaseMethod):
+class MasterMovelets(MoveletsBaseMethod, BaseMethod):
     
     PROVIDE = 'MM'
     
     NAMES = {    
-        'MM':   'MASTERMovelets',
+        'MM':   'Master',
         'MM+Log':  'MASTERMovelets-Log',
         'MMp':  'MASTERPivots',
         'MMp+Log': 'MASTERPivots-Log',
@@ -15,10 +15,9 @@ class MasterMovelets(BaseMethod):
         'MMpL': 'MASTERPivots-Log',
     }
     
-    def __init__(self, idx, isLog=True, isPivots=True):
-        super().__init__(idx)
-        self.isLog = isLog
-        self.isPivots = isPivots
+    def __init__(self, idx, isLog=True, isPivots=False):
+        BaseMethod.__init__(self, idx)
+        MoveletsBaseMethod.__init__(self, isLog=isLog, isPivots=isPivots)
     
     def render(self):
         return [
@@ -44,61 +43,29 @@ class MasterMovelets(BaseMethod):
 
         if param_id == 2:
             self.isPivots = value
-
+        
     @property
-    def name(self):
-        name = 'MM'
-        if self.isPivots:
-            name += 'p'
-        if self.isLog:
-            name += 'L'
-        return name
+    def version(self):
+        return ''
     
-    def title(self):
-        name = self.PROVIDE
-        if self.isPivots:
-            name += 'p'
-        if self.isLog:
-            name += '+Log'
-        return str(self.idx)+') ' + self.NAMES[name]
+    @property
+    def jar_name(self):
+        return 'MASTERMovelets.jar'
     
-    def script(self, params, data_path='${DATAPATH}', res_path='${RESPATH}', prog_path='${PROGPATH}'):
-        program = os.path.join(prg_path, 'MASTERMovelets.jar')
-        outfile = os.path.join(res_path, self.name+'.txt')
-
-        java_opts = ''
-        if 'GB' in params.keys():
-            java_opts = '-Xmx'+params['GB']+'G'
-            
-        descriptor = os.path.basename(data_path)
-        cmd = f'-descfile "{descriptor}_specific_hp.json"'
-        
-        if 'nt' in params.keys():
-            cmd += ' -nt ' + params['nt']
-            
-        if not self.isLog:
-            cmd += ' -Ms -1'
-        else:
-            cmd += ' -Ms -3'
-            
-        cmd = f'java {java_opts} -jar "{program}" -curpath "{data_folder}" -respath "{res_path}" ' + cmd
-        cmd += ' -ed true -samples 1 -sampleSize 0.5 -medium "none" -output "discrete" -lowm "false" -ms -1'
-        cmd += f' 2>&1 | tee -a "{outfile}" \n\n'
-        
+    def cmd_pivots(self, params):
+        if self.isPivots:
+            return ' -pvt true -lp false -pp 10 -op false'
+        return ''
+    
+    def desc_file(self, params):
+        return params['dataset'] + "_v1.json"
+    
+    def cmd_line(self, params):
+        # 0-java_opts; 1-program; 2-data_path; 3-res_path; 4-config; 5-extras
+        cmd = 'java {0} -jar "{1}" -curpath "{2}" -respath "{3}" {4} {5}'
         if 'TC' in params.keys():
-            cmd = 'timeout ' + params['TC'] + cmd
-        
-        cmd += '# Join the result train and test data:\n'
-        cmd += f'MAT-MergeDatasets.py "{res_path}" \n\n'
-        
-        cmd += '# Run MLP and RF classifiers:\n'
-        cmd += f'MAT-MC.py -c "MLP,RF" "{res_path}"\n\n'
-        
-        cmd += '# This script requires python package "mat-classification".\n'
-        
+            cmd = 'timeout ' + params['TC'] +' '+ cmd
         return cmd
     
-    def downloadLine(self):
-        url = 'https://raw.githubusercontent.com/ttportela/automatize/main/jarfiles/'
-        model = 'curl -o {1} {0}/{1} \n'
-        return model.format(url, 'MASTERMovelets.jar')
+    def extras(self, params):
+        return '-ed true -samples 1 -sampleSize 0.5 -medium "none" -output "discrete" -lowm "false"'

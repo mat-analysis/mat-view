@@ -1,46 +1,104 @@
 ### HiPerMovelets
 
-\[ [Runnable](https://github.com/ttportela/automatize/blob/main/jarfiles/HIPERMovelets.jar?raw=true) \]
+\[ [publication](https://doi.org/10.1080/13658816.2021.2018593) \] \[ [GitHub](https://github.com/ttportela/MoveletsDiscovery) \] \[ [JAR](https://github.com/ttportela/MoveletsDiscovery/releases/download/v1.2.0/MoveletDiscovery.jar) \]
 
 
-**HIPERMovelets: high-performance movelet extraction for trajectory classification** is a new method for movelets discovery, developed as an optimization for MASTERMovelets.
-
-You can run the feature extractor with the following command:
+**HiPerMovelets: high-performance movelet extraction for trajectory classification**, published in International Journal of Geographical Information Science
  
-```Bash
-    java JAVA_OPTS -jar HIPERMovelets.jar -curpath DIR_PATH -respath RESULTS_DIR_PATH 
-    -descfile DATA_DIR_PATH/DESCRIPTOR_FILE.json -nt NUMBER_OF_THREADS -ed true 
-    -ms MIN_SUBTRAJ_SIZE -Ms MAX_SUBTRAJ_SIZE -cache true -output discrete 
-    -samples 1 -sampleSize 0.5 -medium "none" -output "discrete" -lowm "false"
-    -version hiper|hiper-pivots
+
+## Versions
+
+
+This is a project with the HIPERMovelets (Portela, 2020) implementation, with three options of optimizations.
+
+
+- *HiPerMovelets*: new optimization for MASTERMovelets, with greedy search (`-version hiper`).
+- *HiPerPivots*: limits the movelets search space to the points that are neighbour of well qualified movelets of size one (`-version hiper-pivots`).
+
+\* Uses Log limit for trajectory size by default, use `-Ms -1` to disable Log limit if is set by default.
+
+## Setup
+
+A. In order to run the code you first need to install Java 8 (or superior). Be sure to have enough RAM memory available. 
+
+B. Download the `MoveletDiscovery.jar` file from the releases, or compile and export the jar file for the main class: `br.ufsc.mov3lets.run.Mov3letsRun`
+
+## Usage
+
+### 1. You can run the HIPERMovelets with the following command:
+
+```Shell
+-curpath "$BASIC_PATH" 
+-respath "$RESULT_PATH" 
+-descfile "$DESC_FILE"  
+-version hiper
+-nt 8
 ```
 
-**HiPerMovelets** command example to run:
-```Bash
-    java -Xmx300g -jar programs/HIPERMovelets.jar 
-    -curpath "datasets/multiple_trajectories/Foursquare_nyc/run1" 
-    -respath "results/Foursquare_nyc/run1/HIPERMovelets" 
-    -descfile "datasets/multiple_trajectories/descriptors/FoursquareNYC_specific_hp.json" 
-    -nt 8 -version hiper 
+
+Where:
+- `BASIC_PATH`: The path for the input CSV training and test files.
+- `RESULT_PATH`: The destination folder for CSV results files.
+- `DESC_FILE`: Path for the descriptor file. File that describes the dataset attributes and similarity measures.
+- `-version`: Method to run (hiper, hiper-pvt, ...)
+- `-nt`: Number of threads
+
+    
+### 2. For instance:
+
+To run the HIPERMovelets you can run the java code with the following default entries as example:
+
+
+```Shell
+java -Xmx80G -jar MoveletDiscovery.jar 
+-curpath "$BASIC_PATH" -respath "$RESULT_PATH" -descfile "$DESC_FILE" 
+-version hiper -nt 8 -ed true -samples 1 -sampleSize 0.5 -medium "none" -output "discrete" -lowm "false" -ms 1 -Ms -3 | tee -a "output.txt"
 ```
 
-**HiPerMovelets-Pivots** command example to run:
-```Bash
-    java -Xmx300g -jar programs/HIPERMovelets.jar 
-    -curpath "datasets/multiple_trajectories/Foursquare_nyc/run1" 
-    -respath "results/Foursquare_nyc/run1/HIPERMovelets-Pivots" 
-    -descfile "datasets/multiple_trajectories/descriptors/FoursquareNYC_specific_hp.json" 
-    -nt 8 -version hiper-pivots
+
+This will run with 80G memory limit, 8 threads, and save the output to the file `output.txt`.
+
+It is the same as (without the output file):
+
+```Shell
+java -Xmx80G -jar MoveletDiscovery.jar 
+-curpath "$BASIC_PATH" -respath "$RESULT_PATH" -descfile "$DESC_FILE" 
+-version hiper -nt 8
 ```
 
-#### 1.1 Versions
+### Examples
 
-This implementation has three options of optimizations.
+**HIPERMovelets** (with log)
 
-- *HIPERMovelets*: the greedy search method (`-version hiper`).
-- *HIPERMovelets-Log*: the greedy search method, plus, limits the movelets size to the ln size of the trajectory (`-version hiper -Ms -3`).
-- *HIPERMovelets-Pivots*: limits the movelets search space to the points that are neighbour of well qualified movelets of size one (`-version hiper-pivots`).
-- *HIPERMovelets-Pivots-Log*: plus, limits the movelets size to the ln size of the trajectory (`-version hiper-pivots -Ms -3`).
+
+```Shell
+java -jar MoveletDiscovery.jar 
+-curpath "$BASIC_PATH" -respath "$RESULT_PATH" -descfile "$DESC_FILE" 
+-version hiper 
+```
+
+**HIPERMovelets-Pivots** (with log)
+
+
+```Shell
+java -jar MoveletDiscovery.jar 
+-curpath "$BASIC_PATH" -respath "$RESULT_PATH" -descfile "$DESC_FILE" 
+-version hiper-pivots 
+```
+
+**To a complete list of parameters:**
+
+```Shell
+java -jar MoveletDiscovery.jar --help
+```
+
+## Change Log
+
+Refer to [CHANGELOG.md](./CHANGELOG.md).
+
+## Author
+
+Tarlis Portela
 
 ##### Reference:
 

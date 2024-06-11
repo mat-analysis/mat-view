@@ -4,6 +4,13 @@ Check package `mat-classification` for using implemented methods:
 
 - [mat-classification](https://github.com/mat-analysis/mat-classification): Methods for MAT classification;
 
+1. [UltraMovelets](/method/classification/UltraMovelets.md) ![Method-Badge](https://img.shields.io/badge/Feature_Extraction-Movelets-brightgreen.svg)
+
+    Portela T.T., Carvalho J.T., Bogorny V. **UltraMovelets: Efficient Movelet Extraction for Multiple Aspect Trajectory Classification**. The 35th International Conference on Database and Expert Systems Applications (DEXA 2024), 2024. DOI: https://doi.org/#
+
+1. [RandomMovelets](/method/classification/UltraMovelets.md) ![Method-Badge](https://img.shields.io/badge/Feature_Extraction-Movelets-brightgreen.svg)
+
+    Portela T.T., Bogorny V. **Towards optimization methods for movelets extraction in multiple aspect trajectory classification**. UFSC, Thesis, 2023. URL: https://repositorio.ufsc.br/handle/123456789/247733
 
 1. [HIPERMovelets](/method/classification/HIPERMovelets.md) ![Method-Badge](https://img.shields.io/badge/Feature_Extraction-Movelets-brightgreen.svg)
 

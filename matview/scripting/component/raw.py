@@ -1,53 +1,45 @@
 import os
 from abc import ABC
 
-from matview.scripting.component._base import BaseMethod
+from matview.scripting.component._base import BaseMethod, MoveletsBaseMethod
 
-class RawTrajectoryMethod(ABC):
+class RawTrajectoryMethod(MoveletsBaseMethod):
 
     def __init__(self):
-        pass
+        MoveletsBaseMethod.__init__(self)
+    
+    def title(self):
+        return self.NAMES[self.PROVIDE]
     
     @property
     def name(self):
         return self.PROVIDE
-        
-    def script(self, params, data_path='${DATAPATH}', res_path='${RESPATH}', prog_path='${PROGPATH}'):
-        program = os.path.join(prg_path, self.name+'.jar')
-        outfile = os.path.join(res_path, self.name+'.txt')
-
-        java_opts = ''
-        if 'GB' in params.keys():
-            java_opts = '-Xmx'+params['GB']+'G'
-            
-        descriptor = os.path.basename(data_path)
-        cmd = f'-descfile "{descriptor}_specific_hp.json"'
-        
-        if 'nt' in params.keys():
-            cmd += ' -nt ' + params['nt']
-            
-        cmd = f'java {java_opts} -jar "{program}" -curpath "{data_folder}" -respath "{res_path}" ' + cmd
-        cmd += f' 2>&1 | tee -a "{outfile}" \n\n'
-        
+    
+    @property
+    def version(self):
+        return ''
+    
+    @property
+    def jar_name(self):
+        return self.PROVIDE+'.jar'
+    
+    def cmd_pivots(self, params):
+        return ''
+    
+    def desc_file(self, params):
+        return params['dataset'] + "_v1.json"
+    
+    def cmd_line(self, params):
+        # 0-java_opts; 1-program; 2-data_path; 3-res_path; 4-config; 5-extras
+        cmd = 'java {0} -jar "{1}" -curpath "{2}" -respath "{3}" {4} {5}'
         if 'TC' in params.keys():
-            cmd = 'timeout ' + params['TC'] + cmd
-        
-        cmd += '# Join the result train and test data:\n'
-        cmd += f'MAT-MergeDatasets.py "{res_path}" \n\n'
-        
-        cmd += '# Run MLP and RF classifiers:\n'
-        cmd += f'MAT-MC.py -c "MLP,RF" "{res_path}"\n\n'
-        
-        cmd += '# This script requires python package "mat-classification".\n'
-        
+            cmd = 'timeout ' + params['TC'] +' '+ cmd
         return cmd
     
-    def downloadLine(self):
-        url = 'https://raw.githubusercontent.com/ttportela/automatize/main/jarfiles/'
-        model = 'curl -o {1} {0}/{1} \n'
-        return model.format(url, self.PROVIDE+'.jar')
+    def extras(self, params):
+        return ''
 
-class Dodge(BaseMethod, RawTrajectoryMethod):
+class Dodge(RawTrajectoryMethod, BaseMethod):
     
     PROVIDE = 'Dodge'
     
@@ -56,9 +48,10 @@ class Dodge(BaseMethod, RawTrajectoryMethod):
     }
     
     def __init__(self, idx):
-        super().__init__(idx)
+        BaseMethod.__init__(self, idx)
+        RawTrajectoryMethod.__init__(self)
 
-class Xiao(BaseMethod, RawTrajectoryMethod):
+class Xiao(RawTrajectoryMethod, BaseMethod):
     
     PROVIDE = 'Xiao'
     
@@ -67,9 +60,10 @@ class Xiao(BaseMethod, RawTrajectoryMethod):
     }
     
     def __init__(self, idx):
-        super().__init__(idx)
+        BaseMethod.__init__(self, idx)
+        RawTrajectoryMethod.__init__(self)
 
-class Zheng(BaseMethod, RawTrajectoryMethod):
+class Zheng(RawTrajectoryMethod, BaseMethod):
     
     PROVIDE = 'Zheng'
     
@@ -78,47 +72,25 @@ class Zheng(BaseMethod, RawTrajectoryMethod):
     }
     
     def __init__(self, idx):
-        super().__init__(idx)
+        BaseMethod.__init__(self, idx)
+        RawTrajectoryMethod.__init__(self)
 
-class Movelets(BaseMethod, RawTrajectoryMethod):
+class Movelets(RawTrajectoryMethod, BaseMethod):
     
-    PROVIDE = 'Movelets'
+    PROVIDE = 'M'
     
     NAMES = {
+        'M': 'Movelets',
         'Movelets': 'Movelets',
     }
     
     def __init__(self, idx):
-        super().__init__(idx)
-        
-    def script(self, params, data_path='${DATAPATH}', res_path='${RESPATH}', prog_path='${PROGPATH}'):
-        program = os.path.join(prg_path, self.name+'.jar')
-        outfile = os.path.join(res_path, self.name+'.txt')
-
-        java_opts = ''
-        if 'GB' in params.keys():
-            java_opts = '-Xmx'+params['GB']+'G'
-            
-        descriptor = os.path.basename(data_path)
-        cmd = f'-descfile "{descriptor}_specific_hp.json"'
-        
-        if 'nt' in params.keys():
-            cmd += ' -nt ' + params['nt']
-            
-        cmd = f'java {java_opts} -jar "{program}" -curpath "{data_folder}" -respath "{res_path}" ' + cmd + ' -q LSP -p false'
-        cmd += f' 2>&1 | tee -a "{outfile}" \n\n'
-        
-        if 'TC' in params.keys():
-            cmd = 'timeout ' + params['TC'] + cmd
-        
-        cmd += '# Join the result train and test data:\n'
-        cmd += f'MAT-MergeDatasets.py "{res_path}" \n\n'
-        
-        cmd += '# Run MLP and RF classifiers:\n'
-        cmd += f'MAT-MC.py -c "MLP,RF" "{res_path}"\n\n'
-        
-        cmd += '# This script requires python package "mat-classification".\n'
-        
-        return cmd
+        BaseMethod.__init__(self, idx)
+        RawTrajectoryMethod.__init__(self)
     
-            
+    def extras(self, params):
+        return '-q LSP -p false'
+    
+    @property
+    def jar_name(self):
+        return 'Movelets.jar'

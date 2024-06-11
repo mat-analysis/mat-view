@@ -1,15 +1,19 @@
+import os
 from dash import dcc
 import dash_bootstrap_components as dbc
 
-from matview.scripting.component._base import BaseMethod
+from matview.scripting.component._base import BaseMethod, TrajectoryBaseMethod
 
-class MARC(BaseMethod): # TODO: marc params
+class MARC(BaseMethod, TrajectoryBaseMethod): # TODO: marc params
     
     PROVIDE = 'MARC'
     
     NAMES = {
         'MARC': 'MARC',
     }
+    
+    MERGE_TYPE = ['add', 'average', 'concatenate']
+    RNN_CELL   = ['gru', 'lstm']
     
     def __init__(self, idx, embedder_size=100, merge_type='concatenate', rnn_cell='lstm'):
         super().__init__(idx)
@@ -35,7 +39,7 @@ class MARC(BaseMethod): # TODO: marc params
                                 id={'type': 'exp-param2','index': self.idx},
                                 options=[
                                     {'label': ' '+y+' ', 'value': y} \
-                                    for y in ['add', 'average', 'concatenate']
+                                    for y in MARC.MERGE_TYPE
                                 ],
                                 value=self.merge_type,
                                 inputStyle={'marginRight': '5px'},
@@ -57,7 +61,7 @@ class MARC(BaseMethod): # TODO: marc params
                                 id={'type': 'exp-param3','index': self.idx},
                                 options=[
                                     {'label': ' '+y+' ', 'value': y} \
-                                    for y in ['gru', 'lstm']
+                                    for y in MARC.RNN_CELL
                                 ],
                                 value=self.rnn_cell,
                                 inputStyle={'marginRight': '5px'},
@@ -81,5 +85,33 @@ class MARC(BaseMethod): # TODO: marc params
         if param_id == 3:
             self.rnn_cell = value
     
+    @property
+    def name(self):
+        name = self.PROVIDE
+        conf = []
+        if self.embedder_size != 100:
+            conf.append(str(self.embedder_size))
+        if self.merge_type != 'concatenate':
+            conf.append(self.merge_type)
+        if self.rnn_cell != 'lstm':
+            conf.append(self.rnn_cell)
+        if len(conf) > 0:
+            name += '_' + '_'.join(conf)
+        return name
+    
     def title(self):
-        return str(self.idx)+') ' + self.NAMES[self.PROVIDE]
+        return self.NAMES[self.PROVIDE] + ' ({}, {}, {})'.format(self.embedder_size, self.merge_type, self.rnn_cell)
+    
+    def script(self, params, folder='${DIR}', data_path='${DATAPATH}', res_path='${RESPATH}', prog_path='${PROGPATH}'):
+        exp_path = os.path.join(res_path, folder)
+        outfile = os.path.join(res_path, folder, folder+'.txt')
+        
+        cmd = f'MARC.py -c "{self.PROVIDE}" "{data_path}" "{exp_path}" --embedding-size {self.embedder_size} --merge-tipe {self.merge_type} --rnn-cell {self.rnn_cell}'
+        if 'TC' in params.keys():
+            cmd = 'timeout ' + params['TC'] +' '+ cmd
+        
+        cmd += f' 2>&1 | tee -a "{outfile}" \n\n'
+        
+        cmd += '# This script requires python package "mat-classification".\n'
+        
+        return cmd

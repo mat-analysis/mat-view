@@ -19,7 +19,7 @@ config = configparser.ConfigParser()
 config.read('pyproject.toml')
 VERSION = config['project']['version'].strip('"')
 PACKAGE_NAME = config['project']['name'].strip('"')
-DEV_VERSION = "0.1b0"
+DEV_VERSION = "0.1b1"
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -38,7 +38,12 @@ setuptools.setup(
     packages=setuptools.find_packages(),
 #    include_package_data=True,
     scripts=[
-         'scripts/MAT-Web.py', # For future
+        'scripts/MAT-Web.py',
+        
+        'scripts/results/MAT-Summary.py',
+        'scripts/results/MAT-ExportResults.py',
+        'scripts/results/MAT-PrintResults.py',
+        'scripts/results/MAT-MoveResults.py',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

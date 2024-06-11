@@ -1,4 +1,4 @@
-from matview.scripting.component._base import BaseMethod
+#from matview.scripting.component._base import BaseMethod, TrajectoryBaseMethod
 from matview.scripting.component.hiper import *
 from matview.scripting.component.ultra import *
 from matview.scripting.component.marc import *

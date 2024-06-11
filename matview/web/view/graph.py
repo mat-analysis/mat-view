@@ -89,10 +89,12 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
     ls_movs = movelets[from_value : 
             (to_value if to_value <= len(movelets) else len(movelets))]
     
+    graph_module ='matview.view.mgraph.'
+    
     if len(ls_movs) <= 0:
         fig = html.H6('No movelets uploaded ...')
     elif model == 'markov':
-        render = getattr(import_module('matview.view.movelet.'+model), 'render')
+        render = getattr(import_module(graph_module+model), 'render')
         G = render(ls_movs, sel_attribute)
         
         fig = cyto.Cytoscape(
@@ -123,7 +125,7 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
             ]
         )
     elif model == 'sankey':
-        render = getattr(import_module('matview.view.movelet.'+model), 'render')
+        render = getattr(import_module(graph_module+model), 'render')
         G = render(ls_movs, sel_attribute)
         
         fig = dcc.Graph(
@@ -133,7 +135,7 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
         )
     elif model in ['heatmap']:
         if len(ls_movs) > 0:
-            render = getattr(import_module('matview.view.movelet.'+model), 'render')
+            render = getattr(import_module(graph_module+model), 'render')
             
             G = render(ls_movs, sel_attribute)
 #            print('NUM DEU')

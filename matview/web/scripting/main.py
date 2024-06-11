@@ -39,18 +39,18 @@ def render(pathname):
         
         html.Div([
             html.Div(children=[
-                html.Strong('Installation Root Path:'),
-                dbc.Input(id='input-exp-root', value='/home/user/experiment', type='text', style={'width': '100%'}),
+#                html.Strong('Installation Root Path:'),
+#                dbc.Input(id='input-exp-root', value='', type='text', placeholder='e.g. /home/user/experiments (or leave blank for relative path)', style={'width': '100%'}),
                 
-                html.Strong('Experiment Group Prefix:'),
-                dbc.Input(id='input-exp-folder', value='exp01', type='text', style={'width': '100%'}),
+                html.Strong('Experiment Group Folder:'),
+                dbc.Input(id='input-exp-folder', value='EX_01', type='text', style={'width': '100%'}),
                 
                 html.Br(),
                 dbc.InputGroup(
                     [
                         dbc.InputGroupText(dbc.Checkbox(id='input-exp-use-dataset', value=False)), 
                         dbc.InputGroupText('Alternative Datasets Path:'),
-                        dbc.Input(id='input-exp-datafolder', value='/home/user/experiment/data', type='text'),
+                        dbc.Input(id='input-exp-datafolder', value='', placeholder='/home/user/experiment/data', type='text'),
                     ],
                     className="mb-3",
                 ),
@@ -112,7 +112,7 @@ def render(pathname):
                 
                 dbc.InputGroup(
                     [
-                        dbc.InputGroupText(dbc.Checkbox(value=False)), 
+                        dbc.InputGroupText(dbc.Checkbox(value=False, id='input-exp-is-k')), 
                         dbc.InputGroupText('K-Fold:'),
                         dbc.Input(id='input-exp-k', type="number", min=1, step=1, value=5),
                         dbc.InputGroupText('resamples'),
@@ -189,7 +189,7 @@ def display_methods(idx, method, children, reset):
     
     item = dbc.AccordionItem(
         generator.render(),
-        title=generator.title(),
+        title=getTitle(idx-1),#generator.title(),
         id={
             'type': 'exp-container',
             'index': idx
@@ -218,7 +218,7 @@ def update_p1(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=1)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 ### PARAM 2 ###
 @app.callback(
@@ -234,7 +234,7 @@ def update_p2(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=2)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 
 ### PARAM 3 ###
@@ -251,7 +251,7 @@ def update_p3(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=3)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 ### PARAM 4 ###
 @app.callback(
@@ -267,7 +267,7 @@ def update_p4(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=4)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 ### PARAM 5 ###
 @app.callback(
@@ -283,7 +283,7 @@ def update_p5(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=5)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 ### PARAM 6 ###
 @app.callback(
@@ -299,7 +299,7 @@ def update_p6(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=6)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 ### PARAM 7 ###
 @app.callback(
@@ -315,7 +315,7 @@ def update_p7(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=7)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 ### PARAM 8 ###
 @app.callback(
@@ -331,7 +331,7 @@ def update_p8(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=8)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 ### PARAM 9 ###
 @app.callback(
@@ -347,7 +347,7 @@ def update_p9(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=9)
-    return MLIST[idx].title()
+    return getTitle(idx)
 
 ### PARAM 10 ###
 @app.callback(
@@ -363,7 +363,12 @@ def update_p10(id, value):
     idx = id['index']-1
     
     MLIST[idx].update(changed_id, value, param_id=10)
-    return MLIST[idx].title()
+    return getTitle(idx)
+
+
+def getTitle(idx):
+    global MLIST
+    return str(idx+1)+') ' + MLIST[idx].title()
 
 # --------------------------------------------------------------------------------
 # DOWNLOAD:
@@ -371,7 +376,7 @@ def update_p10(id, value):
     Output('download-experiments', 'data'),
     Output('experiments-err', 'children'),
     Input('experiments-download', 'n_clicks'),
-    State('input-exp-root', 'value'),
+#    State('input-exp-root', 'value'),
     State('input-exp-folder', 'value'),
     State('input-exp-use-dataset', 'value'),
     State('input-exp-datafolder', 'value'),
@@ -383,11 +388,12 @@ def update_p10(id, value):
     State('input-exp-use-exe', 'value'),
     State('input-exp-nt', 'value'),
     State('input-exp-gb', 'value'),
+    State('input-exp-is-k', 'value'),
     State('input-exp-k', 'value'),
     State('input-exp-pyname', 'value'),
     prevent_initial_call=True,
 )
-def download(value, basedir, folderpref, isDs, datapath, isTC, TC, TCD, datasets, otherds, isExe, nt, gb, k, pyname):
+def download(value, basedir, isDs, datapath, isTC, TC, TCD, datasets, otherds, isExe, nt, gb, isk, k, pyname):
     global MLIST
     
     if not datasets and not otherds:
@@ -395,6 +401,9 @@ def download(value, basedir, folderpref, isDs, datapath, isTC, TC, TCD, datasets
     if len(MLIST) <= 0:
         return dash.no_update, 'You must add methods to generate scripts.'
     
+    if not isk:
+        k = False
+        
     if otherds and not otherds == '':
         otherds = otherds.split(',')
     else:
@@ -402,7 +411,7 @@ def download(value, basedir, folderpref, isDs, datapath, isTC, TC, TCD, datasets
         
     envdir = tempfile.TemporaryDirectory()
     
-    gen_env(envdir.name, MLIST, basedir, datapath, folderpref, datasets, otherds, isDs, isTC, TC, TCD, nt, gb, k, pyname)
+    gen_env(envdir.name, MLIST, basedir, datapath, datasets, otherds, isDs, isTC, TC, TCD, nt, gb, k, pyname)
     
     zf_tf = tempfile.NamedTemporaryFile(delete=True, suffix='.zip')
     prepare_zip(envdir.name, zf_tf)
