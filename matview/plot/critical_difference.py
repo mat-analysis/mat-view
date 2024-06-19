@@ -216,12 +216,12 @@ def graph_ranks(avranks, names, p_values, cd=None, cdmethod=None, lowv=None, hig
     k = len(ssums)
 
     suffix_cls = len(set(map(lambda x: x.split('-')[-1], nnames))) > 1
-    def filter_names(name):
-        x = name.split('-')
-        if x[0] in METHOD_NAMES:
-            return METHOD_NAMES[x[0]] + ('-'+x[-1] if suffix_cls else '')
-        else:
-            return name
+#    def filter_names(name):
+#        x = name.split('-')
+#        if x[0] in METHOD_NAMES:
+#            return METHOD_NAMES[x[0]] + ('-'+x[-1] if suffix_cls else '')
+#        else:
+#            return name
 
     space_between_names = 0.24
 
@@ -233,7 +233,8 @@ def graph_ranks(avranks, names, p_values, cd=None, cdmethod=None, lowv=None, hig
              linewidth=linewidth)
         if labels:
             text(textspace + 0.3, chei - 0.075, format(ssums[i], '.4f'), ha="right", va="center", size=10)
-        text(textspace - 0.2, chei, filter_names(nnames[i]), ha="right", va="center", size=16)
+#        text(textspace - 0.2, chei, filter_names(nnames[i]), ha="right", va="center", size=16)
+        text(textspace - 0.2, chei, nnames[i], ha="right", va="center", size=16)
 
     for i in range(math.ceil(k / 2), k):
         chei = cline + minnotsignificant + (k - i - 1) * space_between_names
@@ -243,7 +244,8 @@ def graph_ranks(avranks, names, p_values, cd=None, cdmethod=None, lowv=None, hig
              linewidth=linewidth)
         if labels:
             text(textspace + scalewidth - 0.3, chei - 0.075, format(ssums[i], '.4f'), ha="left", va="center", size=10)
-        text(textspace + scalewidth + 0.2, chei, filter_names(nnames[i]),
+#        text(textspace + scalewidth + 0.2, chei, filter_names(nnames[i]),
+        text(textspace + scalewidth + 0.2, chei, nnames[i],
              ha="left", va="center", size=20) #16
 
     # no-significance lines

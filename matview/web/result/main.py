@@ -18,9 +18,11 @@ from dash.dependencies import Output, Input, State
 from matview.web.app_base import app, sess, gess
 from matview.web.config import WEB_ROUTE, RESULTS_FILE, render_markdown_file, alert, underDev
 
-from matview.util.format import format_float, format_hour
+from matview.util.format import format_float, format_hour, findComponent
 from matview.web.definitions import *
 from matview.plot import MODULE_NAMES, importPlotter
+
+from matview.scripting.component._base import BaseMethod
 
 def render(pathname):
     sess('DATA', None)
@@ -101,15 +103,15 @@ def filter_results(sel_datasets=None, sel_methods=None, sel_models=None, file=RE
     
     df['set'] = df['dataset'] + list(map(lambda ss: ' ('+ss+')' if ss != 'specific' else '', df['subset']))
     
-    def get_sort_methods(df):
-        methods = list(df['method'].unique())
-        aux = list(filter(lambda x: x not in METHOD_NAMES.keys(), methods))
-        aux.sort()
-        methods = list(filter(lambda x: x in methods, METHOD_NAMES.keys())) + aux
-        return methods
+#    def get_sort_methods(df):
+#        methods = list(df['method'].unique())
+#        aux = list(filter(lambda x: x not in METHOD_NAMES.keys(), methods))
+#        aux.sort()
+#        methods = list(filter(lambda x: x in methods, METHOD_NAMES.keys())) + aux
+#        return methods
     
     datasets    = list(df['set'].unique())
-    methods     = get_sort_methods(df)
+    methods     = list(df['method'].unique()) #get_sort_methods(df)
     models      = list(df['model'].unique())
     names       = list(df['name'].unique())
     dskeys      = list(df['key'].unique())
@@ -222,7 +224,8 @@ def render_experiments(sel_datasets=None, sel_methods=None, sel_models=None, sel
 #                             'value': x} for x in methods
 #                        ],
                         options=list(map(lambda x: 
-                            {'label': METHOD_NAMES[x] if x in METHOD_NAMES.keys() else x, 
+#                            {'label': METHOD_NAMES[x] if x in METHOD_NAMES.keys() else x, 
+                            {'label': getMethodName(x), 
                              'value': x}, methods
                         )),
                         multi=True,
@@ -249,7 +252,7 @@ def render_result_panel(df, view, sel_methods=None, sel_datasets=None, sel_model
     if view in MODULE_NAMES.keys():
         content = render_plot(df, sel_methods, sel_datasets, sel_models, sel_columns, view)
     elif view == 'average_rank':
-        content = render_ranks(df.copy())
+        content = render_ranks(df.copy(), sel_columns)
     elif view == 'pivot_table':
         content = render_expe_pivot_table(df.copy(), sel_methods, sel_datasets)
     else: #elif view == 'raw_results':
@@ -307,18 +310,34 @@ def render_plot(df, sel_methods, sel_datasets, sel_models, sel_columns, plot_nam
 
 
 # --- --- --- --- --- --- Other Views --- --- --- --- --- --- 
-def render_ranks(df): 
-    return html.Div([
-        html.H4('Accuracy Ranks:'),
-        render_avg_rank(df, rank_col='metric:accuracy', ascending=False),
-        html.Hr(), html.Br(),
-        html.H4('Total Time Ranks:'),
-        render_avg_rank(df, rank_col='totaltime', ascending=True, format_func=format_hour),
-        html.Hr(), html.Br(),
-        html.H4('Classification Time Ranks:'),
-        render_avg_rank(df[df['cls_runtime'] > 0], rank_col='cls_runtime', ascending=True, format_func=format_hour),
-        html.Br(),
-    ], style={'margin':10})
+def render_ranks(df, sel_columns):
+    components = []
+
+    for col in sel_columns:
+        if 'time' in col: # Fix for time columns
+            components += [
+                html.H4(metricName(col)+' Ranks:'),
+                render_avg_rank(df[df[col] > 0], rank_col=col, ascending=True, format_func=format_hour),
+                html.Hr(), html.Br(),
+            ]
+        else:
+            components += [
+                html.H4(metricName(col)+' Ranks:'),
+                render_avg_rank(df, rank_col=col, ascending=False),
+                html.Hr(), html.Br(),
+            ]
+    return html.Div(components, style={'margin':'1em'})
+#    [
+#        html.H4('Accuracy Ranks:'),
+#        render_avg_rank(df, rank_col='metric:accuracy', ascending=False),
+#        html.Hr(), html.Br(),
+#        html.H4('Total Time Ranks:'),
+#        render_avg_rank(df, rank_col='metric:totaltime', ascending=True, format_func=format_hour),
+#        html.Hr(), html.Br(),
+#        html.H4('Classification Time Ranks:'),
+#        render_avg_rank(df[df['cls_runtime'] > 0], rank_col='cls_runtime', ascending=True, format_func=format_hour),
+#        html.Br(),
+#    ], style={'margin':10})
 
 def render_avg_rank(df, rank_col='metric:accuracy', ascending=False, format_func=format_float): 
     cls_name = 'method'
@@ -333,16 +352,21 @@ def render_avg_rank(df, rank_col='metric:accuracy', ascending=False, format_func
         dfx = dfx.sort_values(['rank']).reset_index()
 
         rankItems = []
+        value = None
+        rank = 0
         for i in range(len(dfx)):
+            rank = rank+1 if value != dfx[rank_col][i] else rank # Share the same position
+            value = dfx[rank_col][i]
             rankItems.append(dbc.ListGroupItem(
                 dbc.Row(
-                    [
-                        dbc.Col(dbc.Badge(str(i+1)+'º', color="light", text_color="primary", className="ms-1")),
-                        dbc.Col(html.Span( METHOD_NAMES[dfx[cls_name][i]] 
-                                          if dfx[cls_name][i] in METHOD_NAMES.keys() else dfx[cls_name][i] )),
+                    [ #                    str(i+1)
+                        dbc.Col(dbc.Badge('{:.0f}º'.format(rank), color="light", text_color="primary", className="ms-1")),
+#                        dbc.Col(html.Span( METHOD_NAMES[dfx[cls_name][i]] 
+#                                          if dfx[cls_name][i] in METHOD_NAMES.keys() else dfx[cls_name][i] )),
+                        dbc.Col(html.Span( getMethodName(dfx[cls_name][i]) )),
                         dbc.Col(html.Span( MODEL_NAMES[dfx['model'][i]] 
                                           if dfx['model'][i] in MODEL_NAMES.keys() else dfx['model'][i] )),
-                        dbc.Col(html.Span( format_func(dfx[rank_col][i]) )),
+                        dbc.Col(html.Span( format_func(value) )),
                         dbc.Col(html.Span(str(dfx['rank'][i]) + ' (Avg Rank)')),
                     ]
                 ),
@@ -358,10 +382,15 @@ def render_expe_table(df):
     
     dfx = df.drop(['#','timestamp','file','random','set','error','name','key'], axis=1, errors='ignore')
     
-    dfx['method'] = [METHOD_NAMES[x] if x in METHOD_NAMES.keys() else x for x in dfx['method']]
-    dfx['runtime'] = [format_hour(x) for x in dfx['runtime']]
-    dfx['cls_runtime'] = [format_hour(x) for x in dfx['cls_runtime']]
-    dfx['totaltime'] = [format_hour(x) for x in dfx['totaltime']]
+#    dfx['method'] = [METHOD_NAMES[x] if x in METHOD_NAMES.keys() else x for x in dfx['method']]
+    dfx['method'] = [getMethodName(x) for x in dfx['method']]
+    
+    for col in dfx.columns:
+        if 'time' in col: # Fix for time columns
+            dfx[col] =  dfx[col].apply(format_hour)#  [format_hour(x) for x in dfx[col]]
+#    dfx['runtime'] = [format_hour(x) for x in dfx['runtime']]
+#    dfx['cls_runtime'] = [format_hour(x) for x in dfx['cls_runtime']]
+#    dfx['totaltime'] = [format_hour(x) for x in dfx['totaltime']]
     
     return html.Div([
         dash_table.DataTable(
@@ -408,7 +437,8 @@ def resultsTable(df, col, title='', methods_order=None, datasets_order=None): # 
 #    df['dsi'] = df['key'].apply(lambda x: {datasets_order[i]:i for i in range(len(datasets_order))}[x])
 #    df = df.sort_values(['methodi', 'dsi'])
 
-    df['method'] = list(map(lambda m: METHOD_NAMES[m] if m in METHOD_NAMES.keys() else m, df['method']))
+#    df['method'] = list(map(lambda m: METHOD_NAMES[m] if m in METHOD_NAMES.keys() else m, df['method']))
+    df['method'] = list(map(lambda m: getMethodName(m), df['method']))
 
     if len(set(df['model'].unique()) - set('-')) > 1:
         df['name'] = df['method'] + list(map(lambda x: '-'+x if x != '-' else '', df['model']))
@@ -416,3 +446,16 @@ def resultsTable(df, col, title='', methods_order=None, datasets_order=None): # 
         df['name'] = df['method']
         
     return pd.pivot_table(df, values='metric:accuracy', index='key', columns=['name'], fill_value='-')
+
+# -----------------------------------------------------------------------
+METHOD_COMPONENTS = BaseMethod.providedMethods()
+def getMethodName(method):
+    c = findComponent(method, METHOD_COMPONENTS)
+    if c:
+        name = c.decodeName(method)
+        if method in c.NAMES.keys():
+            name = c.NAMES[method] 
+        else:
+            name = c.decodeName(method)
+        return name + ' ({})'.format(method) if name != method else name
+    return method

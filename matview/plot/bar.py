@@ -16,24 +16,27 @@ from matview.web.definitions import *
 
 def render(df, column=None, methods_order=None, datasets_order=None, models_order=None, aggregate_ds=False):
     metric = metricName(column) 
-    pc = PlotConfig(label_pos = [-15,0] if aggregate_ds else [0,0])
+#    pc = PlotConfig(label_pos = [-15,0] if aggregate_ds else [0,0])
+    pc = PlotConfig(label_pos = [0,0])
     
-    if column.replace('metric:', '') in ['accuracy', 'accuracyTop5']:
-        pc.lim = (0, 105)
-        pc.suffix = '%'
-        pc.label_pos[1] = -15
-        pc.mask = '{:,.1f}'
+    if column.replace('metric:', '') in ['accuracy', 'accuracyTop5'] or df[column].max() <= 1.0:
+#        pc.lim = (0, 105)
+#        pc.suffix = '%'
+        pc.lim = (0, 1.05)
+        pc.suffix = ''
+#        pc.label_pos[1] = -15
+        pc.mask = '{:,.2f}' #'{:,.1f}'
 #        fmt = {'ylim': (0, 105), 'scale':1, 'suffix':'%', 'label_pos':(label_pos[0],-15), 'mask':'{:,.1f}'}
         metric += ' (' + ','.join(set(df['model'].unique()) - set('-')) + ')'
         return barPlot(df, column, title=metric, methods_order=methods_order, datasets_order=datasets_order, 
                               plot_config=pc, mean_aggregation=aggregate_ds)
-    elif column.replace('metric:', '') in ['f1_score', 'precision', 'recall', 'loss']:
-        pc.lim = (0, 1.05)
-        pc.scale = 1.0
-        pc.label_pos[1] = -15
-        pc.mask = '{:,.2f}'
-        return barPlot(df, column, title=metric, methods_order=methods_order, datasets_order=datasets_order, 
-                              plot_config=pc, mean_aggregation=aggregate_ds)
+#    elif column.replace('metric:', '') in ['f1_score', 'precision', 'recall', 'loss']:
+#        pc.lim = (0, 1.05)
+#        pc.scale = 1.0
+#        pc.label_pos[1] = -15
+#        pc.mask = '{:,.2f}'
+#        return barPlot(df, column, title=metric, methods_order=methods_order, datasets_order=datasets_order, 
+#                              plot_config=pc, mean_aggregation=aggregate_ds)
 #        fmt = {'ylim': (0, 1.05), 'scale':1.0, 'suffix':'', 'label_pos':(label_pos[0],-15), 'mask':'{:,.2f}'}
 #    else:
 #        pc.scale = 1.0
@@ -41,7 +44,7 @@ def render(df, column=None, methods_order=None, datasets_order=None, models_orde
 #        pc.mask = '{:,.2f}'
 #        fmt = {'scale':1.0, 'suffix':'', 'label_pos':label_pos}
     
-    elif column.replace('metric:', '') in ['clstime', 'runtime', 'totaltime']:
+    elif column.replace('metric:', '') in ['clstime', 'runtime', 'totaltime'] or 'time' in column.replace('metric:', ''):
 #        def format_metric(x):
 #            s = format_hour(x)
 #            return s[:s.find('m')] if 'h' in s else (s[:s.find('m')+1] if 'm' in s else s) #s[:s.find('m')+1]
@@ -90,7 +93,7 @@ def barPlot(df, column, title='', methods_order=None, datasets_order=None, plot_
     df['dsi'] = df['key'].apply(lambda x: {datasets_order[i]:i for i in range(len(datasets_order))}[x])
     df = df.sort_values(['methodi', 'dsi'])
 
-    df['method'] = list(map(lambda m: METHOD_ABRV[m] if m in METHOD_ABRV.keys() else m, df['method']))
+#    df['method'] = list(map(lambda m: METHOD_ABRV[m] if m in METHOD_ABRV.keys() else m, df['method']))
     
     # ---
     # COLOR PALETTE:

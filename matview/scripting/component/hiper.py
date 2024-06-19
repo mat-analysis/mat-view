@@ -10,7 +10,7 @@ class HiperMovelets(MoveletsBaseMethod, BaseMethod):
     PROVIDE = 'H'
     
     NAMES = {
-        'H': 'HiPer',
+        'H': 'HiPerMovelets',
         
         'hiper': 'HiPerMovelets', 
         'hiper-pivots': 'HiPerPivots', 

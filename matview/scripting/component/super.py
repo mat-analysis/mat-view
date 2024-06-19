@@ -7,15 +7,10 @@ class SuperMovelets(MoveletsBaseMethod, BaseMethod):
     PROVIDE = 'SM'
     
     NAMES = {    
-        'SM': 'Super',
-        'SM+Log': 'SUPERMovelets-Log',
-        'SM-2': 'SUPERMovelets-λ',
-        'SM+Log-2': 'SUPERMovelets-Log-λ',
-        'SM-2+Log': 'SUPERMovelets-Log-λ',
-        'SML': 'SUPERMovelets-Log',
-        'SMD2': 'SUPERMovelets-λ',
-        'SMD2L': 'SUPERMovelets-Log-λ',
-        'SMLD2': 'SUPERMovelets-Log-λ',
+        'SM': 'SuperMovelets',
+        'SML': 'SuperMovelets-Log',
+        'SMD': 'SuperMovelets-λ',
+        'SMLD': 'SuperMovelets-Log-λ',
     }
     
     def __init__(self, idx, isLog=True, isLambda=True):
@@ -72,47 +67,3 @@ class SuperMovelets(MoveletsBaseMethod, BaseMethod):
     
     def extras(self, params):
         return '-ed true -samples 1 -sampleSize 0.5 -medium "none" -output "discrete" -lowm "false"'
-    
-#    def script(self, params, data_path='${DATAPATH}', res_path='${RESPATH}', prog_path='${PROGPATH}'):
-#        program = os.path.join(prog_path, 'SUPERMovelets.jar')
-#        outfile = os.path.join(res_path, self.name+'.txt')
-#
-#        java_opts = ''
-#        if 'GB' in params.keys():
-#            java_opts = f"-Xmx{int(params['GB'])}G"
-#            
-#        descriptor = os.path.join(data_path, params['dataset'])
-#        cmd = f'-descfile "{descriptor}_v1.json"'
-#        
-#        if 'nt' in params.keys():
-#            cmd += f" -nt {params['nt']}"
-#            
-#        if not self.isLog:
-#            cmd += ' -Ms -1'
-#        else:
-#            cmd += ' -Ms -3'
-#            
-#        if self.isLambda:
-#            cmd += ' -Al true'
-#            
-#        cmd = f'java {java_opts} -jar "{program}" -curpath "{data_path}" -respath "{res_path}" ' + cmd
-#        cmd += ' -ed true -samples 1 -sampleSize 0.5 -medium "none" -output "discrete" -lowm "false" -ms -1'
-#        cmd += f' 2>&1 | tee -a "{outfile}" \n\n'
-#        
-#        if 'TC' in params.keys():
-#            cmd = 'timeout ' + params['TC'] + cmd
-#        
-#        cmd += '# Join the result train and test data:\n'
-#        cmd += f'MAT-MergeDatasets.py "{res_path}" \n\n'
-#        
-#        cmd += '# Run MLP and RF classifiers:\n'
-#        cmd += f'MAT-MC.py -c "MLP,RF,SVC" "{res_path}"\n\n'
-#        
-#        cmd += '# This script requires python package "mat-classification".\n'
-#        
-#        return cmd
-#    
-#    def downloadLine(self):
-#        url = 'https://raw.githubusercontent.com/mat-analysis/mat-classification/main/jarfiles'
-#        model = 'curl -o {1} {0}/{1} \n'
-#        return model.format(url, 'SUPERMovelets.jar')

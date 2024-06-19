@@ -19,8 +19,10 @@ def render(df, column=None, methods_order=None, datasets_order=None, models_orde
     pc = PlotConfig()
     
     if column.replace('metric:', '') in ['accuracy', 'accuracyTop5']:
-        pc.lim = (-5, 105)
-        pc.suffix = '%'
+#        pc.lim = (-5, 105)
+#        pc.suffix = '%'
+        pc.lim = (-5, 1.05)
+        pc.suffix = ''
         metric += ' (' + ','.join(set(df['model'].unique()) - set('-')) + ')'
         return lineRank(df, column, title=metric, methods_order=methods_order, plot_config=pc)
     elif column.replace('metric:', '') in ['f1_score', 'precision', 'recall', 'loss']:

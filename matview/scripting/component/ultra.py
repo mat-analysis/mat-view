@@ -8,7 +8,7 @@ class UltraMovelets(MoveletsBaseMethod, BaseMethod):
     PROVIDE = 'U'
     
     NAMES = {
-        'U': 'Ultra', 
+        'U': 'UltraMovelets', 
         
         'ultra': 'UltraMovelets', 
     }
@@ -53,8 +53,9 @@ class RandomMovelets(MoveletsBaseMethod, BaseMethod):
     PROVIDE = 'R'
     
     NAMES = {
-        'R': 'Random',
+        'R': 'RandomMovelets',
         
+        'RL': 'RandomMovelets-Log',
         'random': 'RandomMovelets',
         'random+Log': 'RandomMovelets-Log',
     }

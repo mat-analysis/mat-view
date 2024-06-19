@@ -25,6 +25,8 @@ class RawTrajectoryMethod(MoveletsBaseMethod):
     
     def cmd_pivots(self, params):
         return ''
+    def cmd_log(self, params):
+        return ''
     
     def desc_file(self, params):
         return params['dataset'] + "_v1.json"
@@ -87,6 +89,12 @@ class Movelets(RawTrajectoryMethod, BaseMethod):
     def __init__(self, idx):
         BaseMethod.__init__(self, idx)
         RawTrajectoryMethod.__init__(self)
+    
+    def cmd_log(self, params):
+        if not self.isLog:
+            return ' -Ms -1'
+        else:
+            return ' -Ms -3'
     
     def extras(self, params):
         return '-q LSP -p false'

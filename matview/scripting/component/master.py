@@ -7,12 +7,14 @@ class MasterMovelets(MoveletsBaseMethod, BaseMethod):
     PROVIDE = 'MM'
     
     NAMES = {    
-        'MM':   'Master',
-        'MM+Log':  'MASTERMovelets-Log',
-        'MMp':  'MASTERPivots',
-        'MMp+Log': 'MASTERPivots-Log',
-        'MML':  'MASTERMovelets-Log',
-        'MMpL': 'MASTERPivots-Log',
+        'MM':   'MasterMovelets',
+        'MML':  'MasterMovelets-Log',
+        'MMp':  'MasterPivots',
+        'MML':  'MasterPivots-Log',
+        'MMpL': 'MasterPivots-Log',
+        
+        'MM+Log':  'MasterMovelets-Log',
+        'MMp+Log': 'MasterPivots-Log',
     }
     
     def __init__(self, idx, isLog=True, isPivots=False):

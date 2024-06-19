@@ -77,8 +77,9 @@ class Tulvae(BaseMethod, TrajectoryBaseMethod):
             
     def script(self, params, folder='${DIR}', data_path='${DATAPATH}', res_path='${RESPATH}', prog_path='${PROGPATH}'):
         outfile = os.path.join(res_path, folder, folder+'.txt')
+        exp_path = os.path.join(res_path, folder)
         
-        cmd = f'MAT-TC.py -c "{self.PROVIDE}" -of "{self.feature}" "{data_path}" "{res_path}"'
+        cmd = f'MAT-TC.py -c "{self.PROVIDE}" -of "{self.feature}" "{data_path}" "{exp_path}"'
         if 'TC' in params.keys():
             cmd = 'timeout ' + params['TC'] +' '+ cmd
         

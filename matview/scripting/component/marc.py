@@ -106,7 +106,16 @@ class MARC(BaseMethod, TrajectoryBaseMethod): # TODO: marc params
         exp_path = os.path.join(res_path, folder)
         outfile = os.path.join(res_path, folder, folder+'.txt')
         
-        cmd = f'MARC.py -c "{self.PROVIDE}" "{data_path}" "{exp_path}" --embedding-size {self.embedder_size} --merge-tipe {self.merge_type} --rnn-cell {self.rnn_cell}'
+        train = 'train.parquet'
+        test  = 'test.parquet'
+        if 'prefix' in params.keys():
+            train = params['prefix'] + '_' + train
+            test  = params['prefix'] + '_' + test
+        
+        train = os.path.join(data_path, train)
+        test  = os.path.join(data_path, test)
+        
+        cmd = f'MARC.py "{train}" "{test}" "{exp_path}" -c "{self.PROVIDE}" --embedding-size {self.embedder_size} --merge-tipe {self.merge_type} --rnn-cell {self.rnn_cell} -mf "."'
         if 'TC' in params.keys():
             cmd = 'timeout ' + params['TC'] +' '+ cmd
         

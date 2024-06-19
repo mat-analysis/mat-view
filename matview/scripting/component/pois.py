@@ -64,7 +64,7 @@ class POI(BaseMethod):
         outfile = os.path.join(res_path, folder, folder+'.txt')
         
         sequences = ','.join([str(i) for i in range(1,self.sequences+1)])
-        cmd = f'POIS.py -m "{self.PROVIDE}" -s "{sequences}" -f "{self.feature}" --classify "{data_path}" "{res_path}"'
+        cmd = f'POIS.py -m "{self.PROVIDE}" -s "{sequences}" -f "{self.feature}" --classify "{data_path}" "{exp_path}"'
         if 'TC' in params.keys():
             cmd = 'timeout ' + params['TC'] +' '+ cmd
             

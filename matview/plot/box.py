@@ -19,8 +19,10 @@ def render(df, column=None, methods_order=None, datasets_order=None, models_orde
     pc = PlotConfig()
     
     if column.replace('metric:', '') in ['accuracy', 'accuracyTop5']:
-        pc.lim = (-5, 105)
-        pc.suffix = '%'
+#        pc.lim = (-5, 105)
+#        pc.suffix = '%'
+        pc.lim = (-5, 1.05)
+        pc.suffix = ''
         metric += ' (' + ','.join(set(df['model'].unique()) - set('-')) + ')'
         return boxPlot(df, column, title=metric, methods_order=methods_order, plot_config=pc, plot_type=plot_type)
     elif column.replace('metric:', '') in ['f1_score', 'precision', 'recall', 'loss']:
@@ -54,7 +56,7 @@ def boxPlot(df, column, title='', methods_order=None, plot_config=PlotConfig(), 
     df['methodi'] = df['method'].apply(lambda x: {methods_order[i]:i for i in range(len(methods_order))}[x])
     df = df.sort_values(['methodi', 'dataset', 'subset'])
 
-    df['method'] = list(map(lambda m: METHOD_NAMES[m] if m in METHOD_NAMES.keys() else m, df['method']))
+#    df['method'] = list(map(lambda m: METHOD_NAMES[m] if m in METHOD_NAMES.keys() else m, df['method']))
     
     # ---
     # COLOR PALETTE:

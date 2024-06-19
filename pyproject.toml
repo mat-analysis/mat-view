@@ -1,6 +1,6 @@
 [project]
 name = "mat-view"
-version = "0.1b0"
+version = "0.1b1"
 description = "MAT-view: Visualization Tools for Multiple Aspect Trajectory Data Mining"
 authors = [
     {name = "Tarlis Tortelli Portela", email = "tarlis@tarlis.com.br"},

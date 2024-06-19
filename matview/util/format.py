@@ -1,3 +1,16 @@
+# ----------------------------------------------------------------------------------------------------------------
+def getComponent(method):
+    from matview.scripting.component._base import BaseMethod # --------------------------------->>> Local Import *****
+    mcomponents = BaseMethod.providedMethods()
+    return findComponent(method, mcomponents)
+
+def findComponent(method, mcomponents):
+    mnames = list(filter(lambda m: method.upper().startswith(m.upper()), mcomponents.keys()))
+    if len(mnames) > 0:
+        return mcomponents[mnames[0]]
+    
+    return False
+# ----------------------------------------------------------------------------------------------------------------
 class PlotConfig:
     def __init__(self, plotsize=(14,5), scale=1, suffix='', label_pos=[0,0], xrotation=25, label_rotation=70, 
                  mask=None, format_func=None, lim=None):
@@ -104,3 +117,20 @@ def format_date(ts):
         return datetime.fromtimestamp(ts).strftime("%d/%m/%y-%H:%M:%S") if ts > -1 else '-'
     except TypeError:
         return ts
+    
+def convertJavaOrPyDate(date='', mask='%a %b %d %H:%M:%S {} %Y'):
+    from datetime import datetime
+    try:
+        locale = date[::-1].split(' ', 2)
+        locale = locale[1][::-1]
+
+        return datetime.strptime(date, mask.format(locale))
+    except:
+        py_format = '%Y-%m-%d %H:%M:%S.%f'
+        try:
+            return datetime.strptime(date, py_format)
+        except:
+            pass
+    
+    return datetime.now()
+    
