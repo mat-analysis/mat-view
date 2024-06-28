@@ -9,6 +9,16 @@ The present application offers a set of web tools to support the user in the vis
 Created on Jun, 2024
 Copyright (C) 2024, License GPL Version 3 or superior (see LICENSE file)
 
+### Screenshots
+
+![Home](screens/home.png) 
+
+![Results](screens/results.png) 
+
+![Scripting](screens/scripting.png) 
+
+![View](screens/view.png) 
+
 ### Installation
 
 Install directly from PyPi repository, or, download from github. (python >= 3.7 required)
