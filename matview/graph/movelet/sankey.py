@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import plotly
 from plotly import graph_objects as go
 
-from matview.view.helper import get_pointfeature
+from matview.graph.helper import get_pointfeature
 
 # -----------------------------------------------------------------------
 def render(movelets, attribute=None, title='Movelets Sankey Diagram'):
@@ -85,11 +85,13 @@ def render(movelets, attribute=None, title='Movelets Sankey Diagram'):
                 aux_df['label'] = m.trajectory.label
                 aux_df['value'] = 1
                 
-                sourceTargetDf = sourceTargetDf.append(aux_df, ignore_index=True)
+#                sourceTargetDf = sourceTargetDf.append(aux_df, ignore_index=True)
+                sourceTargetDf = pd.concat([sourceTargetDf, pd.DataFrame(aux_df, index=[0])], ignore_index=True)
             else:
                 aux_mov.remove(m)
         
         list(map(lambda m: process(m), aux_mov))
+        sourceTargetDf.reset_index(drop=True, inplace=True)
         i += 1
         
     sourceTargetDf = sourceTargetDf.groupby(['source','target','s','t','label']).agg({'value':'sum'}).reset_index()

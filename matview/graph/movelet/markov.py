@@ -3,7 +3,7 @@ import networkx as nx
 import matplotlib as mat
 from graphviz import Digraph
 
-from matview.view.helper import get_pointfeature
+from matview.graph.helper import get_pointfeature
 # -----------------------------------------------------------------------
 def render(movelets, attribute=None, title='Movelets Markov Graph', concat_edges=True):
     nodes, edges, groups, no_colors, ed_colors = movelets_markov(movelets, attribute, concat_edges=concat_edges)

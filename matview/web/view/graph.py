@@ -34,8 +34,7 @@ from matmodel.base import Movelet
 from matview.web.view.movelet import movelet_component
 
 # ------------------------------------------------------------
-# attributes = ['None']
-# sel_attributes = []
+GRAPH_MODULE = 'matview.graph.'
 # ------------------------------------------------------------
 def render_graph_filter(movelets=[], model='', from_value=0, to_value=100, attributes=[], sel_attribute=''):
     return html.Div([
@@ -55,9 +54,9 @@ def render_graph_filter(movelets=[], model='', from_value=0, to_value=100, attri
                     dcc.Dropdown(
                         id='input-format-mov-graph',
                         options=[
-                            {'label': 'Sankey Model',    'value': 'sankey'},
-                            {'label': 'Markov Model',    'value': 'markov'},
-                            {'label': 'Class Heat Map',  'value': 'heatmap'},
+                            {'label': 'Sankey Model',    'value': 'movelet.sankey'},
+                            {'label': 'Markov Model',    'value': 'movelet.markov'},
+                            {'label': 'Class Heat Map',  'value': 'movelet.heatmap'},
                             {'label': 'Movelets',        'value': 'movelets'},
 #                            {'label': 'Tree Model',  'value': 'qstree'},
 #                            {'label': 'Quality Tree', 'value': 'qtree'},
@@ -81,6 +80,7 @@ def render_graph_filter(movelets=[], model='', from_value=0, to_value=100, attri
         ], style={'width': '100%'})
 
 def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribute=None):
+    global GRAPH_MODULE
     
     if sel_attribute == '':
         sel_attribute = None
@@ -89,12 +89,10 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
     ls_movs = movelets[from_value : 
             (to_value if to_value <= len(movelets) else len(movelets))]
     
-    graph_module ='matview.view.mgraph.'
-    
     if len(ls_movs) <= 0:
         fig = html.H6('No movelets uploaded ...')
-    elif model == 'markov':
-        render = getattr(import_module(graph_module+model), 'render')
+    elif model == 'movelet.markov':
+        render = getattr(import_module(GRAPH_MODULE+model), 'render')
         G = render(ls_movs, sel_attribute)
         
         fig = cyto.Cytoscape(
@@ -124,8 +122,8 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
                 }
             ]
         )
-    elif model == 'sankey':
-        render = getattr(import_module(graph_module+model), 'render')
+    elif model == 'movelet.sankey':
+        render = getattr(import_module(GRAPH_MODULE+model), 'render')
         G = render(ls_movs, sel_attribute)
         
         fig = dcc.Graph(
@@ -133,9 +131,9 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
             style = {'width':'100%'},
             figure=G
         )
-    elif model in ['heatmap']:
+    elif model in ['movelet.heatmap']:
         if len(ls_movs) > 0:
-            render = getattr(import_module(graph_module+model), 'render')
+            render = getattr(import_module(GRAPH_MODULE+model), 'render')
             
             G = render(ls_movs, sel_attribute)
 #            print('NUM DEU')
@@ -165,10 +163,10 @@ def render_graph(movelets=[], model='', from_value=0, to_value=100, sel_attribut
                     html.Li(html.A(id='tree-link', children=[movelet_component(m)])),
                 ls_movs)))
         ], className='movelet')
-    elif model == 'tree':
-        fig = html.Div(render_tree(ls_movs.copy()))
-    elif model == 'qtree':
-        fig = html.Div(render_quality_tree(ls_movs))       
+#    elif model == 'tree': ## TODO Tree views
+#        fig = html.Div(render_tree(ls_movs.copy()))
+#    elif model == 'qtree':
+#x        fig = html.Div(render_quality_tree(ls_movs))       
     else:
         fig = html.H6('Select a graph format ...')
     
