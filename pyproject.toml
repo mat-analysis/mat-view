@@ -1,6 +1,6 @@
 [project]
 name = "mat-view"
-version = "0.1b1"
+version = "0.1rc1"
 description = "MAT-view: Visualization Tools for Multiple Aspect Trajectory Data Mining"
 authors = [
     {name = "Tarlis Tortelli Portela", email = "tarlis@tarlis.com.br"},
@@ -73,7 +73,7 @@ dl = [
 [project.urls]
 "Homepage" = "https://github.com/mat-analysis/mat-view"
 "Repository" = "https://github.com/mat-analysis/mat-view"
-"Documentation" = "https://github.com/mat-analysis/mat-view/blob/main/README.md"
+"Documentation" = "https://mat-analysis.github.io/mat-tools/mat-view/index.html"
 "Download" = "https://pypi.org/project/mat-view/#files"
 "Bug Tracker" = "https://github.com/mat-analysis/mat-view/issues"
 

@@ -243,7 +243,7 @@ def update_movelets(data):
     # TRANSFORM Movelets:
     ls_movs       = gess('ls_movs', [])
     
-    ls_aux = json2movelet(data)
+    ls_aux = json2movelet(data, load_distances=True)
     
     ls_movs = ls_movs + ls_aux 
         

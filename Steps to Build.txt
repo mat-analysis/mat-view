@@ -7,10 +7,10 @@ python setup.py sdist bdist_wheel
 python -m twine upload dist/* --skip-existing
 
 # Docker image build:
-sudo docker build -t automatise .
+sudo docker build -t matview .
 
 # Run Container:
-sudo docker run -p 8050:8050 web-automatize
+sudo docker run -p 8050:8050 web-matview
 
 # ---------------------------------
 # For updating the PyPi package
@@ -26,7 +26,7 @@ python3 -m build
 python3 -m twine upload --repository testpypi dist/* 
 
 # Install from the test PyPi:
-python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps automatize
+python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps mat-view
 
 
 # 2nd upload to the PyPi:
@@ -39,5 +39,9 @@ python3 -m pip install -U sphinx
 
 cd docs
 sphinx-quickstart
+
+# Check configurations ...
+
+sphinx-apidoc -f -o source ../matview --implicit-namespaces -d=10
 
 make html

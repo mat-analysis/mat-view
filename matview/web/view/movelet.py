@@ -6,10 +6,22 @@ def movelet_component(m, ident=0):
     n = m.size
     feats = m.attribute_names# list(m.attributes())
     
+    # Width configs:
+    WDt = len(m.trajectory.T)
+    WDp = len(str(len(m.points)))+1
+    WDm = len(m.Miq)
+    
+    # Width for feats:
+    WDf = max( map(lambda f: len(f), feats)) 
+    WDf = max(WDf, WDm, WDp, WDt)
+    
     # Width for elements:
     WD = max( map(lambda i: max(map(lambda j: len(str(m.points[i].aspects[j])), range(m.l))), range(n)) ) + 3
     
-    WE = WD//3 # Width Extra chars
+    # Width Extra chars
+    WE = WD//3
+    
+    # Element Height:
     HG = 25
     
     return html.Div(
@@ -17,7 +29,7 @@ def movelet_component(m, ident=0):
             html.Div([
                 html.Span(
                     m.Miq, 
-                    style={"float":"left", "position":"relative", "top":"-5px", "width": str(WD)+'ch'},
+                    style={"float":"left", "position":"relative", "top":"-5px", "left": "-5ch", "width": str(WDf)+'ch'},
                 ),
                 html.Div('',
                          className="m-slider-rail",
@@ -40,12 +52,12 @@ def movelet_component(m, ident=0):
                     html.Span(
                         m.trajectory.T,
                         className="m-slider-mark-text m-slider-mark-text-active",
-                        style={"transform": "translateX(-50%)", "left": "0%"}
+                        style={"transform": "translateX(-50%)", "width": str(WDf)+'ch'}
                     )
                 ]+list(map(lambda i: 
                     html.Span(m.points[i].p #'p'+str(m.start+i)
                     , className="m-slider-mark-text m-slider-mark-text-active"
-                    , style={"transform": "translateX(-50%)", "left": "{}%".format((i+1)*100//n)}),
+                    , style={"transform": "translateX(-50%)", "left": "{}%".format((i+1)*100//n), "width": str(WDp)+'ch'}),
                 range(n))), className="m-slider-mark"),
                 
             ] + \
@@ -54,7 +66,7 @@ def movelet_component(m, ident=0):
                 html.Div([
                     html.Span(str(feats[k])
                     , className="m-slider-mark-text m-slider-mark-text-active"
-                    , style={"transform": "translateX(-50%)", "left": "0%", "top": '{}px'.format(int(HG*(k+1))), "width": str(WD)+'ch'})
+                    , style={"transform": "translateX(-50%)", "left": "0%", "top": '{}px'.format(int(HG*(k+1))), "width": str(WDf)+'ch'})
                 ]+list(map(lambda i:
                     html.Span(str(m.points[i].aspects[k])
                     , className="m-slider-mark-text m-slider-mark-text-active"
@@ -70,7 +82,7 @@ def movelet_component(m, ident=0):
             , style={"position":"relative"})
         , style={"padding":"0px 25px 25px"})
     , style={
-        "width": str((n*WD)+(2*WE))+"ch", 
+        "width": str( (WDf+(n*WD)+(2*WE)) )+"ch", 
         "height": '{}px'.format(HG*(len(feats)+2)),
         "paddingLeft": str(WE//2)+"ch", 
         "paddingRight": str(WE)+"ch", 

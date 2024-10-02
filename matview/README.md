@@ -1,23 +1,25 @@
 # MAT-view: Visualization Tools for Multiple Aspect Trajectory Data Mining \[MAT-Tools Framework\]
 ---
 
-\[[Publication](#)\] \[[citation.bib](citation.bib)\] \[[GitHub](https://github.com/mat-analysis/mat-view)\] \[[PyPi](https://pypi.org/project/mat-view/)\]
+\[[Publication](#)\] \[[Bibtex](https://github.com/mat-analysis/mat-tools/blob/main/references/mat-tools.bib)\] \[[GitHub](https://github.com/mat-analysis/mat-view)\] \[[PyPi](https://pypi.org/project/mat-view/)\]
 
 
-The present application offers a set of web tools to support the user in the visualization of multiple aspect trajectories and movelets (the parts of the trajectory that better discriminate a class). Also, present a detailed list of available datasets on a public repository, descriptions of MAT data mining methods, experimental results exploration, environmental and scripting generators. It integrates into a unique platform of the approaches available for multiple aspects trajectories and in general for multidimensional sequence classification into a unique web-based and python library system.
+The present application offers a set of web tools to support the user in the visualization of multiple-aspect trajectories and movelets (the parts of the trajectory that better discriminate a class). Also, present a detailed list of available datasets on a public repository, descriptions of MAT data mining methods, experimental results exploration, environmental and scripting generators. It integrates into a unique platform of the approaches available for multiple aspects trajectories and in general for multidimensional sequence classification into a unique web-based and python library system.
 
 Created on Jun, 2024
 Copyright (C) 2024, License GPL Version 3 or superior (see LICENSE file)
 
+\* This package docstrings are limited. But you can refer to the [Demonstration Video](https://youtu.be/HMymPh66Anc) for more information on how to use it.
+
 ### Screenshots
 
-![Home](screens/home.png) 
+![Home](https://github.com/mat-analysis/mat-view/blob/main/screens/home.png?raw=true) 
 
-![Results](screens/results.png) 
+![Results](https://github.com/mat-analysis/mat-view/blob/main/screens/results.png?raw=true) 
 
-![Scripting](screens/scripting.png) 
+![Scripting](https://github.com/mat-analysis/mat-view/blob/main/screens/scripting.png?raw=true) 
 
-![View](screens/view.png) 
+![View](https://github.com/mat-analysis/mat-view/blob/main/screens/view.png?raw=true) 
 
 ### Installation
 
@@ -43,12 +45,7 @@ By default Dash will run on http://127.0.0.1:8050/
 
 If you use `mat-view` please cite the following paper:
 
-**TODO**
-
-Bibtex:
-```bash
-@inproceedings{...}
-```
+ - Portela, T. T.; Machado, V. L.; Renso, C. Unified Approach to Trajectory Data Mining and Multi-Aspect Trajectory Analysis with MAT-Tools Framework. In: SIMPÓSIO BRASILEIRO DE BANCO DE DADOS (SBBD), 39. , 2024, Florianópolis/SC. \[[Bibtex](https://github.com/mat-analysis/mat-tools/blob/main/references/mat-tools.bib)\]
 
 ### Collaborate with us
 
@@ -62,9 +59,7 @@ This package is part of _MAT-Tools Framework_ for Multiple Aspect Trajectory Dat
 
 - **[mat-tools](https://github.com/mat-analysis/mat-tools)**: Reference guide for MAT-Tools Framework repositories
 
-And others:
-
 
 ### Change Log
 
-This is a package under construction, see [CHANGELOG.md](./CHANGELOG.md)
+This is a package under construction, see [CHANGELOG.md](https://github.com/mat-analysis/mat-view/blob/main/CHANGELOG.md)
