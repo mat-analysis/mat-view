@@ -165,7 +165,7 @@ def barPlot(df, column, title='', methods_order=None, datasets_order=None, plot_
 
     for container in p1.containers:
         p1.bar_label(container, labels=list(map(lambda x: plot_config.format_val(x), container.datavalues)), 
-                     rotation=plot_config.label_rotation, horizontalalignment='center', position=plot_config.label_pos)
+                     rotation=plot_config.label_rotation, position=plot_config.label_pos)#, horizontalalignment='center')
 
     plt.tight_layout()
     return p1.get_figure()

@@ -29,7 +29,7 @@ import networkx as nx
 
 from importlib import import_module
 
-from matmodel.base import Movelet
+from matmodel.feature import Movelet
 
 from matview.web.view.movelet import movelet_component
 

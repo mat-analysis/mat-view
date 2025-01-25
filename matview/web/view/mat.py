@@ -32,7 +32,7 @@ import dash_pager
 from tqdm.auto import tqdm
 
 from matmodel.base import Trajectory
-from matmodel.base import Movelet
+from matmodel.feature import Movelet
 from matmodel.util.filters import names2indexes, attributes2names
 
 # ------------------------------------------------------------

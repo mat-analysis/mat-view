@@ -2,7 +2,7 @@ import os
 from dash import html
 from abc import ABC
 
-from matclassification.methods._lib.metrics import *
+#from matclassification.methods._lib.metrics import *
 
 # On demand import in readMetrics methods:
 #from matview.scripting import result
